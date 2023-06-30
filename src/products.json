@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Remera",
+    "description": "Remera de morley, mangas cortas",
+    "price": 10,
+    "thumbnail": "blablabla",
+    "code": 123456,
+    "stock": 5
+  },
+  {
+    "id": 2,
+    "title": "Jean",
+    "description": "Jean oxford, tiro alto",
+    "price": 25,
+    "thumbnail": "blablabla",
+    "code": 123450,
+    "stock": 3
+  },
+  {
+    "id": 3,
+    "title": "Sweater",
+    "description": "Sweater de hilo, escote en V",
+    "price": 20,
+    "thumbnail": "blablabla",
+    "code": 234567,
+    "stock": 1
+  },
+  {
+    "id": 4,
+    "title": "Campera",
+    "description": "Campera de gabardina, con capucha",
+    "price": 40,
+    "thumbnail": "blablabla",
+    "code": 345678,
+    "stock": 2
+  }
+]
