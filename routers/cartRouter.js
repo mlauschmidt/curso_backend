@@ -2,18 +2,16 @@ const { Router } = require('express');
 const cartRouter = Router();
 
 const CartManager = require('../CartManager');
-const archivo = './carts.json';
-const manager = new CartManager(archivo);
+const cartManager = new CartManager('./carts.json');
 
 cartRouter.get('/', async (req, res) => {
-    const carts = await manager.getCarts();
+    const carts = await cartManager.getCarts();
 
     return res.json(carts);
 })
 
 cartRouter.post('/', async (req, res) => {
-    const data = req.body;
-    const newCart= await manager.createCart(data);
+    const newCart= await cartManager.createCart();
 
     if (!newCart) {
         return res.status(404).json({
@@ -25,7 +23,7 @@ cartRouter.post('/', async (req, res) => {
 })
 
 cartRouter.get('/:cid', async (req, res) => {
-    const cart = await manager.getCartById(parseInt(req.params.cid));
+    const cart = await cartManager.getCartById(parseInt(req.params.cid));
 
     if (!cart) {
         return res.status(404).json({
@@ -40,11 +38,12 @@ cartRouter.post('/:cid/product/:pid', async (req, res) => {
     const cartId = parseInt(req.params.cid);
     const productId = parseInt(req.params.pid);
     const quantity = req.body;
-    const updatedCart= await manager.updateCart(cartId, productId, quantity);
+    const updatedCart = await cartManager.updateCart(cartId, productId, quantity);
 
-    if (!updatedCart) {
+    if (!updatedCart.id) {
         return res.status(404).json({
-            error: 'Error al agregar el producto'
+            error: `Error al agregar el producto. ${updatedCart}`
+
         });
     }
 

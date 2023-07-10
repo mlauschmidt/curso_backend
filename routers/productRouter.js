@@ -21,7 +21,7 @@ productRouter.get('/', async (req, res) => {
 productRouter.get('/:pid', async (req, res) => {
     const product = await manager.getProductById(parseInt(req.params.pid));
 
-    if (!product) {
+    if (!product.id) {
         return res.status(404).json({
             error: 'Product not found'
         });
@@ -34,9 +34,9 @@ productRouter.post('/', async (req, res) => {
     const data = req.body;
     const newProduct= await manager.createProduct(data);
 
-    if (!newProduct) {
+    if (!newProduct.id) {
         return res.status(404).json({
-            error: 'Error al cargar el producto'
+            error: `Error al cargar el producto. ${newProduct}`
         });
     }
 

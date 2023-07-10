@@ -28,7 +28,7 @@ class ProductManager {
                 .then((products) => {
 
                     const newProduct = {
-                        id: products.length + 1,
+                        id: products[products.length-1].id + 1,
                         title: data.title,
                         description: data.description,
                         price: data.price,
@@ -73,6 +73,7 @@ class ProductManager {
                     return findProduct;
                 } else {
                     console.log(`Not found`);
+                    return 'Producto inexistente';
                 }
             })
             .catch((err) => {

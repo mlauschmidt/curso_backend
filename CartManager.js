@@ -1,5 +1,8 @@
 const fs = require('fs');
 
+const ProductManager = require('./ProductManager');
+const productManager = new ProductManager('./products.json');
+
 class CartManager {
     constructor (path) {
         this.path = path;
@@ -16,21 +19,21 @@ class CartManager {
             })
     }
 
-    createCart (data) {
+    createCart () {
         return this.getCarts()
             .then((carts) => {
 
             const newCart = {
-                id: carts.length + 1,
-                products: data
+                id: carts[carts.length-1].id + 1,
+                products: []
             };        
 
             fs.promises.writeFile(this.path, JSON.stringify([...carts, newCart], null, 2))
                 .then(() => {
-                    console.log('Producto agregado correctamente');
+                    console.log('Carrito creado correctamente');
                 })
                 .catch((err) => {
-                    console.log('Error al agregar producto');
+                    console.log('Error al crear el carrito');
                 })
 
             return newCart;
@@ -57,46 +60,52 @@ class CartManager {
     }
 
     updateCart (cartId, productId, newQty) {
-        return this.getCarts()
-            .then((carts) => {     
-                const findCart = carts.find(cart => cart.id === cartId);
+        return productManager.getProductById(productId)
+            .then (async (product) => {
+                if (product.id) {
+                    const carts = await this.getCarts();     
+                    const findCart = carts.find(cart => cart.id === cartId);
+                    
+                    if (findCart) {
+                        const cartProducts = findCart.products
+                        const productIndex = cartProducts.findIndex(product => product.productId === productId);
 
-                if (findCart) {
-                    const products = findCart.products
-                    const product = products.findIndex(product => product.productId === productId);
+                        if (!(productIndex === -1)) {
+                            const newData = {
+                                productId: productId,
+                                quantity: cartProducts[productIndex].quantity + newQty.quantity
+                            };
 
-                    if (!(product === -1)) {
-                        const newData = {
-                            productId: productId,
-                            quantity: products[product].quantity + newQty.quantity
-                        };
+                            cartProducts.splice(productIndex, 1, newData);
+                        } else {
+                            const newProduct = {
+                                productId: productId,
+                                quantity: newQty.quantity
+                            };
+                            
+                            cartProducts.push(newProduct);
+                        }
 
-                        products.splice(product, 1, newData);
+                        fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2))
+                                .then(() => {
+                                    console.log('Producto agregado correctamente');
+                                })
+                                .catch((err) => {
+                                    console.log('Error al agregar el producto');
+                                })      
                     } else {
-                        const newProduct = {
-                            productId: productId,
-                            quantity: newQty.quantity
-                        };
-                        
-                        products.push(newProduct);
-                    }
+                        console.log(`Cart not found`);
+                        return 'Carrito inexistente'
+                    } 
 
-                    fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2))
-                            .then(() => {
-                                console.log('Producto actualizado correctamente');
-                            })
-                            .catch((err) => {
-                                console.log('Error al actualizar producto');
-                            })
-                        
-                    return 'ok';
+                    return findCart;
                 } else {
-                    console.log(`Not found`);
-                    return 'Carrito inexistente'
+                    console.log(`Product not found`);
+                    return 'Producto inexistente'
                 }
             })
             .catch((err) => {
-                console.log('Error al leer el archivo');
+                console.log('Error al leer el archivo123');
             })
     }
 

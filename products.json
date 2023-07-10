@@ -15,6 +15,21 @@
     "category": "Remeras"
   },
   {
+    "id": 2,
+    "title": "Jean",
+    "description": "Jean oxford, tiro alto",
+    "price": 23,
+    "thumbnail": [
+      "http://www.image.com/jean-1",
+      "http://www.image.com/jean-2",
+      "http://www.image.com/jean-3"
+    ],
+    "code": 123451,
+    "stock": 7,
+    "status": true,
+    "category": "Jeans"
+  },
+  {
     "id": 3,
     "title": "Sweater",
     "description": "Sweater de hilo, escote en V",
@@ -133,20 +148,5 @@
     "stock": 2,
     "status": true,
     "category": "Camperas"
-  },
-  {
-    "id": 11,
-    "title": "Polera",
-    "description": "Polera de lanilla, mangas largas",
-    "price": 13,
-    "thumbnail": [
-      "http://www.image.com/polera-1",
-      "http://www.image.com/polera-2",
-      "http://www.image.com/polera-3"
-    ],
-    "code": 234500,
-    "stock": 2,
-    "status": true,
-    "category": "Remeras"
   }
 ]
