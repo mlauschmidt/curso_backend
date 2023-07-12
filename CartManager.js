@@ -109,6 +109,62 @@ class CartManager {
             })
     }
 
+    deleteCart (cartId) {
+        return this.getCarts()
+            .then((carts) => {              
+                const cartIndex = carts.findIndex(cart => cart.id === cartId);
+
+                if (!(cartIndex === -1)) {
+                    carts.splice(cartIndex, 1);
+
+                    fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2))
+                        .then(() => {
+                            console.log('Carrito eliminado correctamente');
+                        })
+                        .catch((err) => {
+                            console.log('Error al eliminar carrito');
+                        })  
+                    
+                    return {};
+                } else {
+                    console.log(`Not found`);
+                }
+            })
+            .catch((err) => {
+                console.log('Error al leer el archivo');
+            })
+    }
+
+    deleteProductInCart (cartId, productId) {
+        return this.getCarts()
+            .then ((carts) => {
+                const findCart = carts.find(cart => cart.id === cartId);
+
+                if (findCart) {
+                    const cartProducts = findCart.products
+                    const productIndex = cartProducts.findIndex(product => product.productId === productId);
+
+                    if (!(productIndex === -1)) {
+                        cartProducts.splice(productIndex, 1);
+
+                        fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2))
+                            .then(() => {
+                                console.log('Producto eliminado correctamente');
+                            })
+                            .catch((err) => {
+                                console.log('Error al eliminar el producto');
+                            })
+                        
+                        return {};
+                    } 
+                } else {
+                    console.log(`Not found`);
+                }
+            })
+            .catch((err) => {
+                console.log('Error al leer el archivo');
+            })
+    }
 }
 
 module.exports = CartManager;

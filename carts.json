@@ -61,32 +61,10 @@
   },
   {
     "id": 5,
-    "products": [
-      {
-        "productId": 3,
-        "quantity": 2
-      },
-      {
-        "productId": 1,
-        "quantity": 2
-      },
-      {
-        "productId": 5,
-        "quantity": 2
-      }
-    ]
+    "products": []
   },
   {
     "id": 6,
-    "products": [
-      {
-        "productId": 1,
-        "quantity": 2
-      },
-      {
-        "productId": 10,
-        "quantity": 1
-      }
-    ]
+    "products": []
   }
 ]
