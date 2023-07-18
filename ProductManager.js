@@ -123,6 +123,8 @@ class ProductManager {
         return this.getProducts()
             .then((products) => {              
                 const productIndex = products.findIndex(product => product.id === productId);
+                
+                const deletedProduct = products[productIndex];
 
                 if (!(productIndex === -1)) {
                     products.splice(productIndex, 1);
@@ -135,7 +137,7 @@ class ProductManager {
                             console.log('Error al eliminar producto');
                         })  
                     
-                    return {};
+                    return deletedProduct;
                 } else {
                     console.log(`Not found`);
                 }
