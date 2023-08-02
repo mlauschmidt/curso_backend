@@ -2,19 +2,22 @@
 
 <div id="productsContainer">
     {{#each products}}
-        <ul id="prod-{{this.id}}">
-            <li>Nombre: {{this.title}}
-                <ul>
-                    <li>Id: {{this.id}}</li>
-                    <li>Descripción: {{this.description}}</li>
-                    <li>Precio: {{this.price}}</li>
-                    <li>Imágenes: {{this.thumbnail}}</li>
-                    <li>Código: {{this.code}}</li>
-                    <li>Stock: {{this.stock}}</li>
-                    <li>Categotría: {{this.category}}</li>
-                </ul>
-            </li>
-        </ul>
+        <div id="prod-{{this.id}}" style="border-bottom: 1px solid black">
+            <ul>
+                <li>Nombre: {{this.title}}
+                    <ul>
+                        <li>Id: {{this.id}}</li>
+                        <li>Descripción: {{this.description}}</li>
+                        <li>Precio: {{this.price}}</li>
+                        <li>Imágenes: {{this.thumbnail}}</li>
+                        <li>Código: {{this.code}}</li>
+                        <li>Stock: {{this.stock}}</li>
+                        <li>Categotría: {{this.category}}</li>
+                    </ul>
+                </li>
+            </ul>
+            <button style="margin: 0px 0px 20px 20px" class="deleteButton" id="deleteButton_{{this.id}}" onclick="deleteProduct({{this.id}})">Eliminar</button>
+        </div>
     {{/each}}
 </div>
 

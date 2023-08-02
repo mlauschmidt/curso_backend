@@ -40,6 +40,12 @@ socket.on('producto_modificado', (data) => {
     </li>`;
 })
 
+const deleteProduct = (id) => {
+    fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+    })
+}
+
 socket.on('producto_elimindo', (data) => {
     const product = JSON.parse(data);
 
