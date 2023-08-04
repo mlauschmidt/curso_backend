@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const viewsRouter = Router();
-
-const ProductManager = require('../ProductManager');
+const ProductManager = require('../managers/ProductManager');
 const productManager = new ProductManager('./products.json');
 
 viewsRouter.get('/home', async (req, res) => {
