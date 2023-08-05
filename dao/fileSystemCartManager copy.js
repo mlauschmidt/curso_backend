@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const ProductManager = require('./ProductManager');
+const ProductManager = require('./mongooseProductManager');
 const productManager = new ProductManager('./products.json');
 
 class CartManager {

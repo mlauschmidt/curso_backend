@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const cartRouter = Router();
 
-const CartManager = require('../managers/CartManager');
+const CartManager = require('../dao/mongooseCartManager');
 const cartManager = new CartManager('./carts.json');
 
 cartRouter.get('/', async (req, res) => {

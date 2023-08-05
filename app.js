@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 //Configuracion base de datos
-const MONGODB_CONNECT = 'mongodb+srv://mlauraschmidt:d3Ep0z6YNqHNFK2d@cluster0.xj9o7mz.mongodb.net/proyecto_final?retryWrites=true&w=majority'
+const MONGODB_CONNECT = 'mongodb+srv://mlauraschmidt:d3Ep0z6YNqHNFK2d@cluster0.xj9o7mz.mongodb.net/ecommerce?retryWrites=true&w=majority'
 mongoose.connect(MONGODB_CONNECT)
     .catch(e => {
         console.log('No se pudo conectar a la base de datos.', e);
