@@ -2,7 +2,6 @@ const { Router } = require('express');
 const viewsRouter = Router();
 const ProductManager = require('../dao/mongooseProductManager');
 const productManager = new ProductManager('./products.json');
-const messageModel = require('../dao/models/message.model');
 
 viewsRouter.get('/home', async (req, res) => {
     const products = await productManager.getProducts();
@@ -24,6 +23,17 @@ viewsRouter.get('/realtimeproducts', async (req, res) => {
     }
 
     return res.render('realTimeProducts', params);
+})
+
+viewsRouter.get('/cart/:cid', async (req, res) => {
+    const cart = await productManager.getCartById(req.params.cid);
+    
+    const params = {
+        title: 'Carrito de compras',
+        cart
+    }
+
+    return res.render('cart', params);
 })
 
 viewsRouter.get('/login', (req, res) => {

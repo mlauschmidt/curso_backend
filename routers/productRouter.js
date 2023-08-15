@@ -18,7 +18,7 @@ const productRouterFn = (io) => {
             return res.json(limitedProducts);
         } catch (err) {
             return res.status(404).json({
-                error: err
+                error: err.message
             });
         }
     })
@@ -57,7 +57,7 @@ const productRouterFn = (io) => {
 
             io.emit('producto_modificado', JSON.stringify(updatedProduct));
     
-            return res.json(updatedProduct);
+            return res.status(200).json(updatedProduct);
         } catch (err) {
             return res.status(404).json({
                 error: err.message

@@ -35,7 +35,7 @@ class ProductManager {
             && data.stock
             && data.category ) {
 
-            const products = await this.getProducts()
+            const products = await this.getProducts();
 
             if (products) {
                 const newProduct = {
@@ -78,7 +78,7 @@ class ProductManager {
     }
 
     async updateProduct (productId, data) {
-        const product = await this.getProductById(productId)
+        const product = await this.getProductById(productId);
 
         if (product) {
             const updatedProduct = {
@@ -110,7 +110,7 @@ class ProductManager {
     }
 
     async deleteProduct (productId) {
-        const product = await this.getProductById(productId)
+        const product = await this.getProductById(productId);
 
         if (product) {
             try {
@@ -118,10 +118,10 @@ class ProductManager {
     
                 console.log('Producto eliminado correctamente');
 
-                return true;
+                return product;
             } catch (err) {
                 console.log('Error al eliminar el producto', err);
-                throw new Error('Error al actualizar el producto');
+                throw new Error('Error al eliminar el producto');
             }
         } else {
             console.log('Not found.');

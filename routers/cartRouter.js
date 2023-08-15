@@ -1,78 +1,83 @@
 const { Router } = require('express');
 const cartRouter = Router();
-
 const CartManager = require('../dao/mongooseCartManager');
 const cartManager = new CartManager('./carts.json');
 
 cartRouter.get('/', async (req, res) => {
-    const carts = await cartManager.getCarts();
+    try {
+        const carts = await cartManager.getCarts();
 
-    return res.json(carts);
-})
-
-cartRouter.post('/', async (req, res) => {
-    const newCart= await cartManager.createCart();
-
-    if (!newCart) {
+        return res.json(carts);
+    } catch (err) {
         return res.status(404).json({
-            error: 'Error al crear el carrito'
+            error: err.message
         });
     }
-
-    return res.status(201).json(newCart);
 })
 
 cartRouter.get('/:cid', async (req, res) => {
-    const cart = await cartManager.getCartById(parseInt(req.params.cid));
+    try {
+        const cart = await cartManager.getCartById(req.params.cid);
 
-    if (!cart) {
+        return res.json(cart);
+    } catch (err) {
         return res.status(404).json({
-            error: 'Cart not found'
+            error: err.message
         });
     }
-    
-    return res.json(cart);
+})
+
+cartRouter.post('/', async (req, res) => {
+    try {
+        const newCart= await cartManager.createCart();
+
+        return res.status(201).json(newCart);
+    } catch (err) {
+        return res.status(400).json({
+            error: err.message
+        });
+    }    
 })
 
 cartRouter.post('/:cid/product/:pid', async (req, res) => {
-    const cartId = parseInt(req.params.cid);
-    const productId = parseInt(req.params.pid);
-    const quantity = req.body;
-    const updatedCart = await cartManager.updateCart(cartId, productId, quantity);
+    try {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+        const quantity = req.body.quantity;
+        const updatedCart = await cartManager.updateCart(cartId, productId, quantity);
 
-    if (!updatedCart.id) {
-        return res.status(404).json({
-            error: `Error al agregar el producto. ${updatedCart}`
+        return res.status(200).json(updatedCart);
+    } catch (err) {
+        return res.status(400).json({
+            error: err.message
         });
     }
-
-    return res.status(200).json(updatedCart);
 })
 
 cartRouter.delete('/:cid', async (req, res) => {
-    const cart = await cartManager.deleteCart (parseInt(req.params.cid));
-
-    if (!cart) {
+    try {
+        const cart = await cartManager.deleteCart (req.params.cid);
+        
+        return res.status(204).json({});
+    } catch (err) {
         return res.status(404).json({
-            error: 'Error al eliminar el carrito'
+            error: err.message
         });
     }
-    
-    return res.status(204).json({});
 })
 
 cartRouter.delete('/:cid/product/:pid', async (req, res) => {
-    const cartId = parseInt(req.params.cid);
-    const productId = parseInt(req.params.pid);
-    const updatedCart = await cartManager.deleteProductInCart(cartId, productId);
-
-    if (!updatedCart) {
+    try {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+        const updatedCart = await cartManager.deleteProductInCart(cartId, productId);
+    
+        return res.status(204).json({});
+    } catch (err) {
         return res.status(404).json({
-            error: `Error al eliminar el producto del carrito.`
+            error: err.message
         });
     }
-    
-    return res.status(204).json({});
 })
 
 module.exports = cartRouter;
