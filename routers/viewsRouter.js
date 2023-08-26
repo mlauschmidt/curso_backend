@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const viewsRouter = Router();
+/* const ProductManager = require('../dao/fileSystemProductManager'); */
 const ProductManager = require('../dao/mongooseProductManager');
 const productManager = new ProductManager('./products.json');
 

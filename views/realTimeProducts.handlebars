@@ -2,11 +2,11 @@
 
 <div id="productsContainer">
     {{#each products}}
-        <div id="prod-{{this._id}}" style="border-bottom: 1px solid black">
+        <div id="prod-{{this._id}}{{this.id}}" style="border-bottom: 1px solid black">
             <ul>
                 <li>Nombre: {{this.title}}
                     <ul>
-                        <li>Id: {{this._id}}</li>
+                        <li>Id: {{this._id}}{{this.id}}</li>
                         <li>Descripción: {{this.description}}</li>
                         <li>Precio: {{this.price}}</li>
                         <li>Imágenes: {{this.thumbnail}}</li>
@@ -16,7 +16,7 @@
                     </ul>
                 </li>
             </ul>
-            <button style="margin: 0px 0px 20px 20px" class="deleteButton" id="deleteButton_{{this._id}}" onclick="deleteProduct('{{this._id}}')">Eliminar</button>
+            <button style="margin: 0px 0px 20px 20px" class="deleteButton" id="deleteButton_{{this._id}}{{this.id}}" onclick="deleteProduct('{{this._id}}{{this.id}}')">Eliminar</button>
         </div>
     {{/each}}
 </div>

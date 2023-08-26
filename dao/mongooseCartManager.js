@@ -17,7 +17,7 @@ class CartManager {
     }
 
     async getCartById (cartId) {
-        const cart = await this.model.findById(cartId);
+        const cart = await this.model.findById(cartId)/* .populate('products.product') */;
 
         if (cart) {
             return cart;
@@ -35,7 +35,7 @@ class CartManager {
         const cartCreated = await this.model.create(newCart);
 
         if (cartCreated) {
-            console.log('Carrito creado correctamente');
+            console.log('Carrito creado correctamente.');
             return cartCreated;
         } else {
             console.log('Error al crear el carrito.');
@@ -43,7 +43,7 @@ class CartManager {
         }
     }
   
-     async updateCart (cartId, productId, newQty) {
+     async updateCart (cartId, productId, quantity) {
         const cart = await this.getCartById(cartId);
 
         if (cart) {
@@ -51,32 +51,31 @@ class CartManager {
 
             if (productExists) {
                 try {
-                    const updateCart = await this.model.updateOne({_id: cartId, 'products.product': productId}, {$set: {'products.$.quantity': newQty}});
+                    const updateCart = await this.model.updateOne({_id: cartId, 'products.product': productId}, {$set: {'products.$.quantity': quantity}});
 
-                    console.log('Carrito actualizado correctamente');
+                    console.log('Carrito actualizado correctamente.');
                     
                     return updateCart;
                 } catch (err) {
-                    console.log('Error al actualizar el carrito', err);
-                    throw new Error('Error al actualizar el carrito');
+                    console.log('Error al actualizar el carrito.', err);
+                    throw new Error('Error al actualizar el carrito.');
                 }
             } else {
                 try {
                     const addProduct = {
                         product: productId,
-                        quantity: newQty
+                        quantity: quantity
                     }
     
                     const updateCart = await this.model.updateOne({_id: cartId}, {$push: {products: addProduct}});
 
-                    console.log('Carrito actualizado correctamente');
+                    console.log('Carrito actualizado correctamente.');
     
                     return updateCart;
                 } catch (err) {
-                    console.log('Error al actualizar el carrito', err);
-                    throw new Error('Error al actualizar el carrito');
-                }
-                
+                    console.log('Error al actualizar el carrito.', err);
+                    throw new Error('Error al actualizar el carrito.');
+                }               
             }
         } else {
             console.log('Not found.');
@@ -91,12 +90,12 @@ class CartManager {
             try {
                 await this.model.deleteOne({_id: cartId});
 
-                console.log('Carrito eliminado correctamente');
+                console.log('Carrito eliminado correctamente.');
 
                 return cart;
             } catch (err) {
-                console.log('Error al eliminar el carrito', err);
-                throw new Error('Error al eliminar el carrito');
+                console.log('Error al eliminar el carrito.', err);
+                throw new Error('Error al eliminar el carrito.');
             }
         } else {
             console.log('Not found.');
@@ -114,12 +113,12 @@ class CartManager {
                 try {
                     await this.model.updateOne({_id: cartId}, {$pull: {products: {product: productId}}});
 
-                    console.log('Producto eliminado correctamente');
+                    console.log('Producto eliminado correctamente.');
 
                     return productExists;
                 } catch (err) {
-                    console.log('Error al eliminar el producto', err);
-                    throw new Error('Error al eliminar el producto');
+                    console.log('Error al eliminar el producto.', err);
+                    throw new Error('Error al eliminar el producto.');
                 }
             } else {
                 console.log('Not found.');

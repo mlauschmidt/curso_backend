@@ -12,7 +12,28 @@ class ProductManager {
                 return products;
             })
             .catch((err) => {
-                return [];
+                console.log('No se pudo acceder a la base de datos.', err);
+                throw new Error('No se pudo acceder a la base de datos.');
+            })
+    }
+
+    getProductById (productId) {
+        productId = parseInt(productId);
+
+        return this.getProducts()
+            .then((products) => {
+                const product = products.find(product => product.id === productId);
+
+                if (product) {
+                    return product;
+                } else {
+                    console.log('Not found.');
+                    throw new Error('Producto inexistente.');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                throw new Error(err);
             })
     }
 
@@ -44,49 +65,39 @@ class ProductManager {
                     if (productExists === -1) {
                         fs.promises.writeFile(this.path, JSON.stringify([...products, newProduct], null, 2))
                             .then(() => {
-                                console.log('Producto agregado correctamente');
+                                console.log('Producto agregado correctamente.');
                             })
                             .catch((err) => {
-                                console.log('Error al agregar producto');
+                                console.log('Error al agregar el nuevo producto.', err);
+                                throw new Error('Error al agregar el nuevo producto.');
                             })
 
                         return newProduct;
                     } else {
-                        console.log(`Ya existe un producto con el código ${data.code}`);
-                        return `Ya existe un producto con el código ${data.code}`;
+                        console.log(`Ya existe un producto con el código ${data.code}.`);
+                        throw new Error(`Ya existe un producto con el código ${data.code}.`);
                     }
                 }) 
                 .catch((err) => {
-                    console.log('Error al leer el archivo');
+                    console.log(err);
+                    throw new Error(err);
                 })
         } else {
-            console.log(`Todos los campos son obligatorios`); 
+            console.log('Todos los campos son obligatorios.'); 
+            throw new Error('Todos los campos son obligatorios.'); 
         }
     }
 
-    getProductById (productId) {
-        return this.getProducts()
-            .then((products) => {
-                const findProduct = products.find(product => product.id === productId);
-
-                if (findProduct) {
-                    return findProduct;
-                } else {
-                    console.log(`Not found`);
-                    return 'Producto inexistente';
-                }
-            })
-            .catch((err) => {
-                console.log('Error al leer el archivo');
-            })
-    }
-
     updateProduct (productId, data) {
+        productId = parseInt(productId);
+
         return this.getProducts()
             .then((products) => {       
-                const product = products.find(product => product.id === productId);
+                const productIndex = products.findIndex(product => product.id === productId);
 
-                if (product) {
+                const product = products[productIndex];
+
+                if (!(productIndex === -1)) {
                     const newData = {
                         id: product.id,
                         title: data.title ?? product.title,
@@ -99,27 +110,32 @@ class ProductManager {
                         category: data.category ?? product.category
                     };
 
-                    products.splice(product.id-1, 1, newData);
+                    products.splice(productIndex, 1, newData);
 
                     fs.promises.writeFile(this.path, JSON.stringify(products, null, 2))
                         .then(() => {
-                            console.log('Producto actualizado correctamente');
+                            console.log('Producto actualizado correctamente.');
                         })
                         .catch((err) => {
-                            console.log('Error al actualizar producto');
+                            console.log('Error al actualizar el producto.', err);
+                            throw new Error('Error al actualizar el producto.');
                         })
                     
                     return newData;
                 } else {
-                    console.log(`Not found`);
+                    console.log('Not found.');
+                    throw new Error('Producto inexistente.');
                 }
             })
             .catch((err) => {
-                console.log('Error al leer el archivo');
+                console.log(err);
+                throw new Error(err);
             })
     }
 
     deleteProduct (productId) {
+        productId = parseInt(productId);
+
         return this.getProducts()
             .then((products) => {              
                 const productIndex = products.findIndex(product => product.id === productId);
@@ -131,19 +147,22 @@ class ProductManager {
 
                     fs.promises.writeFile(this.path, JSON.stringify(products, null, 2))
                         .then(() => {
-                            console.log('Producto eliminado correctamente');
+                            console.log('Producto eliminado correctamente.');
                         })
                         .catch((err) => {
-                            console.log('Error al eliminar producto');
+                            console.log('Error al eliminar el producto.', err);
+                            throw new Error('Error al eliminar el producto.');
                         })  
                     
                     return deletedProduct;
                 } else {
-                    console.log(`Not found`);
+                    console.log('Not found.');
+                    throw new Error('Producto inexistente.');
                 }
             })
             .catch((err) => {
-                console.log('Error al leer el archivo');
+                console.log(err);
+                throw new Error(err);
             })
     }
 }

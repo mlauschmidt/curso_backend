@@ -28,54 +28,35 @@ class ProductManager {
     }
 
     async createProduct (data) {
-        if (data.title 
-            && data.description
-            && data.price
-            && data.code
-            && data.stock
-            && data.category ) {
+        const product = await this.model.findOne({code: data.code});
 
-            const products = await this.getProducts();
+        if (!product) {
+            const newProduct = {
+                title: data.title,
+                description: data.description,
+                price: data.price,
+                thumbnail: data.thumbnail,
+                code: data.code,
+                stock: data.stock ?? "Sin stock",
+                status: true,
+                category: data.category
+            };
 
-            if (products) {
-                const newProduct = {
-                    /* id: products[products.length-1].id + 1, */
-                    title: data.title,
-                    description: data.description,
-                    price: data.price,
-                    thumbnail: data.thumbnail,
-                    code: data.code,
-                    stock: data.stock ?? "Sin stock",
-                    status: true,
-                    category: data.category
-                };
+            try {
+                const productCreated = await this.model.create(newProduct);
 
-                const productExists = products.findIndex(product => product.code === data.code);
+                console.log('Producto agregado correctamente.');
 
-                if (productExists === -1) {
-                    try {
-                        const productCreated = await this.model.create(newProduct);
-
-                        console.log('Producto agregado correctamente');
-
-                        return productCreated;
-                    } catch (err) {
-                        console.log('Error al agregar el nuevo producto', err);
-                        throw new Error('Error al agregar el nuevo producto');
-                    }
-                } else {
-                    console.log(`Ya existe un producto con el código ${data.code}`);
-                    throw new Error(`Ya existe un producto con el código ${data.code}`);
-                }
-            } else {
-                console.log('No se pudo acceder a la base de datos.');
-                throw new Error('No se pudo acceder a la base de datos.');
+                return productCreated;
+            } catch (err) {
+                console.log('Error al agregar el nuevo producto.', err);
+                throw new Error('Error al agregar el nuevo producto.');
             }
         } else {
-            console.log('Todos los campos son obligatorios'); 
-            throw new Error('Todos los campos son obligatorios');
+            console.log(`Ya existe un producto con el código ${data.code}.`);
+            throw new Error(`Ya existe un producto con el código ${data.code}.`);
         }
-    }
+    } 
 
     async updateProduct (productId, data) {
         const product = await this.getProductById(productId);
@@ -96,12 +77,12 @@ class ProductManager {
             try {
                 await this.model.updateOne({_id: productId}, updatedProduct);
 
-                console.log('Producto actualizado correctamente');
+                console.log('Producto actualizado correctamente.');
 
                 return updatedProduct;
             } catch (err) {
-                console.log('Error al actualizar el producto', err);
-                throw new Error('Error al actualizar el producto');
+                console.log('Error al actualizar el producto.', err);
+                throw new Error('Error al actualizar el producto.');
             }
         } else {
             console.log('Not found.');
@@ -116,12 +97,12 @@ class ProductManager {
             try {
                 await this.model.deleteOne({_id: productId});
     
-                console.log('Producto eliminado correctamente');
+                console.log('Producto eliminado correctamente.');
 
                 return product;
             } catch (err) {
-                console.log('Error al eliminar el producto', err);
-                throw new Error('Error al eliminar el producto');
+                console.log('Error al eliminar el producto.', err);
+                throw new Error('Error al eliminar el producto.');
             }
         } else {
             console.log('Not found.');
