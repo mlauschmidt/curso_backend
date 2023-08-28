@@ -1,0 +1,126 @@
+<div>
+    {{#if hasCartParam}}
+        <h1>Iniciar sesión</h1>
+
+        <form action="/user" method="post">
+            <label for="user"></label>Email: <input type="text" name="user">
+            <input type="submit" value="Enviar">
+        </form>
+    {{else}}
+        <div style="display: flex; justify-content: end">
+            <button style="padding: 20px" class="seeCartButton" id="seeCartButton_{{cart}}"><a href="http://localhost:8080/carts/{{cart}}">Ver carrito de compras</a></button>
+        </div>
+    {{/if}}
+</div>
+
+<h1>Productos</h1>
+
+<div id="productsContainer">
+    {{#each products.payload}}
+        <div id="prod-{{this._id}}{{this.id}}" style="border-bottom: 1px solid black">
+            <ul>
+                <li>Nombre: {{this.title}}
+                    <ul>
+                        <li>Id: {{this._id}}{{this.id}}</li>
+                        <li>Descripción: {{this.description}}</li>
+                        <li>Precio: {{this.price}}</li>
+                        <li>Imágenes: {{this.thumbnail}}</li>
+                        <li>Código: {{this.code}}</li>
+                        <li>Stock: {{this.stock}}</li>
+                        <li>Categotría: {{this.category}}</li>
+                    </ul>
+                </li>
+            </ul>
+            <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_{{this._id}}{{this.id}}" onclick="addProduct('{{this._id}}{{this.id}}')">Agregar al carrito</button>
+        </div>
+    {{/each}}
+</div>
+
+
+{{!-- BOTONES DE PAGINACION --}}
+<div>
+    {{#if products.hasPrevPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.prevLink}}{{products.sort}}{{products.query}}">Página previa</a>
+                {{else}}
+                    <a href="/products{{products.prevLink}}{{products.sort}}{{products.query}}{{cartLink}}">Página previa</a>
+                {{/if}}
+            {{else}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.prevLink}}{{products.sort}}">Página previa</a>
+                {{else}}
+                    <a href="/products{{products.prevLink}}{{products.sort}}{{cartLink}}">Página previa</a>
+                {{/if}}
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    {{#if hasCartParam}}
+                        <a href="/products{{products.prevLink}}{{products.query}}{{products.sort}}">Página previa</a>
+                    {{else}}
+                        <a href="/products{{products.prevLink}}{{products.sort}}{{products.query}}{{cartLink}}">Página previa</a>
+                    {{/if}}
+                {{else}}
+                    {{#if hasCartParam}}
+                        <a href="/products{{products.prevLink}}{{products.query}}">Página previa</a>
+                    {{else}}
+                        <a href="/products{{products.prevLink}}{{products.query}}{{cartLink}}">Página previa</a>
+                    {{/if}}
+                {{/if}}
+            {{else}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.prevLink}}">Página previa</a>
+                {{else}}
+                    <a href="/products{{products.prevLink}}{{cartLink}}">Página previa</a>
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+
+    {{#if products.hasNextPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.nextLink}}{{products.sort}}{{products.query}}">Página siguiente</a>
+                {{else}}
+                    <a href="/products{{products.nextLink}}{{products.sort}}{{products.query}}{{cartLink}}">Página siguiente</a>
+                {{/if}}
+            {{else}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.nextLink}}{{products.sort}}">Página siguiente</a>
+                {{else}}
+                    <a href="/products{{products.nextLink}}{{products.sort}}{{cartLink}}">Página siguiente</a>
+                {{/if}}
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    {{#if hasCartParam}}
+                        <a href="/products{{products.nextLink}}{{products.query}}{{products.sort}}">Página siguiente</a>
+                    {{else}}
+                        <a href="/products{{products.nextLink}}{{products.query}}{{products.sort}}{{cartLink}}">Página siguiente</a>
+                    {{/if}}
+                {{else}}
+                    {{#if hasCartParam}}
+                        <a href="/products{{products.nextLink}}{{products.query}}">Página siguiente</a>
+                    {{else}}
+                        <a href="/products{{products.nextLink}}{{products.query}}{{cartLink}}">Página siguiente</a>
+                    {{/if}}
+                {{/if}}
+            {{else}}
+                {{#if hasCartParam}}
+                    <a href="/products{{products.nextLink}}">Página siguiente</a>
+                {{else}}
+                    <a href="/products{{products.nextLink}}{{cartLink}}">Página siguiente</a>
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    {{/if}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js"></script>
+<script src="/js/products.js"></script>
+<script src="/js/cart.js"></script>

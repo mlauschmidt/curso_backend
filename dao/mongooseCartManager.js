@@ -1,4 +1,6 @@
 const cartModel = require('./models/cart.model');
+const ProductManager = require('./mongooseProductManager');
+const productManager = new ProductManager();
 
 class CartManager {
     constructor () {
@@ -6,7 +8,7 @@ class CartManager {
     }
 
     async getCarts () {
-        const carts = await this.model.find().lean().populate('products.product');
+        const carts = await this.model.find().lean()/* .populate('products.product') */;
 
         if (carts) {
             return carts;
@@ -17,7 +19,8 @@ class CartManager {
     }
 
     async getCartById (cartId) {
-        const cart = await this.model.findById(cartId)/* .populate('products.product') */;
+        const cart = await this.model.findById(cartId).populate('products.product').lean();
+        cart.products = cart.products.map(product => product = {...product, cartId: cartId});
 
         if (cart) {
             return cart;
@@ -45,7 +48,7 @@ class CartManager {
   
      async updateCart (cartId, productId, quantity) {
         const cart = await this.getCartById(cartId);
-
+        
         if (cart) {
             const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
 
@@ -110,12 +113,14 @@ class CartManager {
             const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
 
             if (productExists) {
+                const product = await productManager.getProductById(productId);
+
                 try {
                     await this.model.updateOne({_id: cartId}, {$pull: {products: {product: productId}}});
 
                     console.log('Producto eliminado correctamente.');
 
-                    return productExists;
+                    return product;
                 } catch (err) {
                     console.log('Error al eliminar el producto.', err);
                     throw new Error('Error al eliminar el producto.');

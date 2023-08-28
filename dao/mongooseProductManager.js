@@ -5,8 +5,50 @@ class ProductManager {
         this.model = productModel;
     }
 
-    async getProducts () {
-        const products = await this.model.find().lean();
+    async getProducts (limit, page, sortParam, queryParam) {
+        let sort;
+        let query;
+
+        const hasSortParam = () => {
+            if (sortParam === undefined){
+                sort = {};
+                return false;
+            } else {
+                sort = {price: sortParam};
+                return true;
+            }
+        }
+        hasSortParam();
+
+        const hasQueryParam = () => {
+            if (queryParam === undefined){
+                query = {};
+                return false;
+            } else {
+                query = {"$or": [{"title": queryParam}, {"category": queryParam}]};
+                return true;
+            }
+        }
+        hasQueryParam();
+ 
+        let products = await this.model.paginate(query, {limit, page, sort: sort});
+
+        products = {
+            /* status: 'success/error', */
+            payload: products.docs.map(product => product.toObject()),
+            totalPages: products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            page: products.page,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            hasSortParam: hasSortParam(),
+            hasQueryParam: hasQueryParam(),
+            sort: `&sort=${sortParam}`,
+            query: `&query=${queryParam}`,
+            prevLink: `?limit=${limit}&page=${products.prevPage}`,
+            nextLink: `?limit=${limit}&page=${products.nextPage}`
+        }
 
         if (products) {
             return products;

@@ -1,7 +1,7 @@
 <h1>Lista de productos</h1>
 
 <div>
-    {{#each products}}
+    {{#each products.payload}}
         <ul>
             <li>Nombre: {{this.title}}
                 <ul>
@@ -16,6 +16,48 @@
             </li>
         </ul>
     {{/each}}
+</div>
+
+<div>
+    {{#if products.hasPrevPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                <a href="/home{{products.prevLink}}{{products.sort}}{{products.query}}">Página previa</a>
+            {{else}}
+                <a href="/home{{products.prevLink}}{{products.sort}}">Página previa</a>
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    <a href="/home{{products.prevLink}}{{products.query}}{{products.sort}}">Página previa</a>
+                {{else}}
+                    <a href="/home{{products.prevLink}}{{products.query}}">Página previa</a>
+                {{/if}}
+            {{else}}
+                <a href="/home{{products.prevLink}}">Página previa</a>    
+            {{/if}}
+        {{/if}}
+    {{/if}}
+
+    {{#if products.hasNextPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                <a href="/home{{products.nextLink}}{{products.sort}}{{products.query}}">Página siguiente</a>
+            {{else}}
+                <a href="/home{{products.nextLink}}{{products.sort}}">Página siguiente</a>
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    <a href="/home{{products.nextLink}}{{products.query}}{{products.sort}}">Página siguiente</a>
+                {{else}}
+                    <a href="/home{{products.nextLink}}{{products.query}}">Página siguiente</a>
+                {{/if}}
+            {{else}}
+            <a href="/home{{products.nextLink}}">Página siguiente</a>    
+            {{/if}}
+        {{/if}}
+    {{/if}}
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

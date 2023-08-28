@@ -7,16 +7,13 @@ const productManager = new ProductManager('./products.json');
 const productRouterFn = (io) => {
     productRouter.get('/', async (req, res) => {
         try {
-            const limit = req.query.limit;
-            const products = await productManager.getProducts();
+            const limit = req.query.limit || 10;
+            const page = req.query.page || 1;
+            const sort = req.query.sort;
+            const query = req.query.query;
+            let products = await productManager.getProducts(limit, page, sort, query);
 
-            if (!limit) {
-                return res.send(products);
-            }
-            
-            const limitedProducts = products.slice(0,limit);
-        
-            return res.json(limitedProducts);
+            return res.json(products);
         } catch (err) {
             return res.status(404).json({
                 error: err.message
@@ -26,7 +23,8 @@ const productRouterFn = (io) => {
     
     productRouter.get('/:pid', async (req, res) => {
         try {
-            const product = await productManager.getProductById(req.params.pid);
+            const prodId = req.params.pid;
+            const product = await productManager.getProductById(prodId);
                        
             return res.json(product);    
         } catch (err) {
@@ -53,8 +51,9 @@ const productRouterFn = (io) => {
     
     productRouter.put('/:pid', async (req, res) => {
         try { 
+            const prodId = req.params.pid;
             const newData = req.body;
-            const updatedProduct = await productManager.updateProduct(req.params.pid, newData);
+            const updatedProduct = await productManager.updateProduct(prodId, newData);
 
             io.emit('producto_modificado', JSON.stringify(updatedProduct));
     
@@ -68,9 +67,8 @@ const productRouterFn = (io) => {
     
     productRouter.delete('/:pid', async (req, res) => {
         try {
-            const product = await productManager.deleteProduct (req.params.pid);
-
-            io.emit('producto_eliminado', JSON.stringify(product));
+            const prodId = req.params.pid;
+            const product = await productManager.deleteProduct(prodId);
 
             return res.status(204).json({});
         } catch (err) {

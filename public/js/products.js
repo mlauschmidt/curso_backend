@@ -2,6 +2,11 @@ const socket = io();
 
 const productsContainer = document.getElementById('productsContainer');
 
+const params = Qs.parse(window.location.search, {
+    ignoreQueryPrefix: true
+})
+const cartId = params.cart;
+
 socket.on('nuevo_producto', (data) => {
     const product = JSON.parse(data);
 
@@ -20,7 +25,7 @@ socket.on('nuevo_producto', (data) => {
                 </ul>
             </li>
         </ul>
-        <button style="margin: 0px 0px 20px 20px" class="deleteButton" id="deleteButton_${product._id || product.id}" onclick="deleteProduct('${product._id || product.id}')">Eliminar</button>
+        <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProduct('${product._id || product.id}')">Agregar al carrito</button>
     </div>`;
 })
 
@@ -43,19 +48,17 @@ socket.on('producto_modificado', (data) => {
             </ul>
         </li>
     </ul>
-    <button style="margin: 0px 0px 20px 20px" class="deleteButton" id="deleteButton_${product._id || product.id}" onclick="deleteProduct('${product._id || product.id}')">Eliminar</button>`;
+    <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProduct('${product._id || product.id}')">Agregar al carrito</button>`;
 })
 
-const deleteProduct = (id) => {
-    fetch(`/api/products/${id}`, {
-        method: 'DELETE',
-    })
+const addProduct = (prodId) => {
+    if (cartId === undefined){
+        alert('Inicie sesión para agregar productos.')
+    } else {
+        fetch(`/api/carts/${cartId}/products/${prodId}`, {
+        method: 'PUT',
+        })
+
+        alert('Producto agregado al carrito.')
+    }
 }
-
-socket.on('producto_eliminado', (data) => {
-    const product = JSON.parse(data);
-
-    const prodId = document.getElementById(`prod-${product._id || product.id}`);
-
-    productsContainer.removeChild(prodId);
-})

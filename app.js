@@ -4,7 +4,7 @@ const socketServer = require('./utils/io');
 const handlebars = require('express-handlebars');
 const viewsRouter = require('./routers/viewsRouter');
 const productRouterFn = require('./routers/productRouter');
-const cartRouter = require('./routers/cartRouter');
+const cartRouterFn = require('./routers/cartRouter');
 
 //Configuracion express
 const app = express();
@@ -36,4 +36,5 @@ app.set('view engine', 'handlebars');
 app.use('/', viewsRouter);
 const productRouter = productRouterFn(io);
 app.use('/api/products', productRouter);
+const cartRouter = cartRouterFn(io);
 app.use('/api/carts', cartRouter);
