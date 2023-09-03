@@ -10,8 +10,8 @@ const cartSchema = mongoose.Schema({
                 },
                 quantity: Number
             }
-    ],
-    default: []
+        ],
+        default: []
     }
 })
 

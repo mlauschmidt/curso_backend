@@ -4,7 +4,6 @@ const cartContainer = document.getElementById('cartContainer');
 
 socket.on('carrito_actualizado', (data) => {
     const product = JSON.parse(data);
-    console.log(product);
 
     const updatedProduct = document.getElementById(`prod-${product.product._id || product.product.id}`);
 

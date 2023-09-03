@@ -1,14 +1,19 @@
 <div>
     {{#if hasCartParam}}
-        <h1>Iniciar sesión</h1>
-
-        <form action="/user" method="post">
-            <label for="user"></label>Email: <input type="text" name="user">
-            <input type="submit" value="Enviar">
-        </form>
-    {{else}}
         <div style="display: flex; justify-content: end">
-            <button style="padding: 20px" class="seeCartButton" id="seeCartButton_{{cart}}"><a href="http://localhost:8080/carts/{{cart}}">Ver carrito de compras</a></button>
+            <button style="padding: 5px; margin: 0px 5px" class="loginButton" ><a href="/login">Iniciar sesión</a></button>
+
+            <button style="padding: 5px; margin: 0px 5px" class="registerButton" ><a href="/register">Rigistrarse</a></button>
+        </div>
+    {{else}}
+        <div style="display: flex; justify-content: space-between">
+            <h1>Bienvenid@ {{user.name}}</h1>
+
+            <div style="display: flex; align-items: center">
+                <button style="padding: 5px; margin: 0px 5px" class="seeCartButton" id="seeCartButton_{{cart}}"><a href="/carts/{{cart}}">Ver carrito de compras</a></button>
+
+                <button style="padding: 5px; margin: 0px 5px" class="logoutButton" onclick="logout()"><a href="/products">Cerrar sesión</a></button>
+            </div>
         </div>
     {{/if}}
 </div>
@@ -38,7 +43,7 @@
 
 
 {{!-- BOTONES DE PAGINACION --}}
-<div>
+<div style="margin: 20px">
     {{#if products.hasPrevPage}}
         {{#if products.hasSortParam}}
             {{#if products.hasQueryParam}}
@@ -121,6 +126,4 @@
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js"></script>
 <script src="/js/products.js"></script>
-<script src="/js/cart.js"></script>

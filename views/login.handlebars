@@ -1,8 +1,10 @@
-<h1>Ingresa tu email para unirte al chat</h1>
+<h1>Iniciar sesión</h1>
 
 <div>
-    <form action="/login" method="post">
-        <label for="user"></label>Email: <input type="text" name="user">
-        <input type="submit" value="Enviar">
+    <form action="/api/sessions/login" method="POST">
+        Email: <input type="text" name="email"><br><br>
+        Contraseña: <input type="password" name="password"><br><br>
+
+        <input type="submit" value="Iniciar sesión">
     </form>
 </div>

@@ -1,8 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const socketServer = require('./utils/io');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const handlebars = require('express-handlebars');
 const viewsRouter = require('./routers/viewsRouter');
+const sessionRouter = require('./routers/sessionRouter');
 const productRouterFn = require('./routers/productRouter');
 const cartRouterFn = require('./routers/cartRouter');
 
@@ -19,6 +23,20 @@ mongoose.connect(MONGODB_CONNECT)
         console.log('No se pudo conectar a la base de datos.', e);
         process.exit();
     })
+
+//Configuracion cookies
+app.use(cookieParser('clave'));
+
+//Configuracion sessions y storage
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: MONGODB_CONNECT,
+        ttl: 3600
+    }),
+    secret: 'clave',
+    resave: true,
+    saveUninitialized: true
+}))
 
 //Configuracion websockets
 const httpServer = app.listen(8080, () => {
@@ -38,3 +56,4 @@ const productRouter = productRouterFn(io);
 app.use('/api/products', productRouter);
 const cartRouter = cartRouterFn(io);
 app.use('/api/carts', cartRouter);
+app.use('/api/sessions', sessionRouter);

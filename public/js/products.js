@@ -2,11 +2,6 @@ const socket = io();
 
 const productsContainer = document.getElementById('productsContainer');
 
-const params = Qs.parse(window.location.search, {
-    ignoreQueryPrefix: true
-})
-const cartId = params.cart;
-
 socket.on('nuevo_producto', (data) => {
     const product = JSON.parse(data);
 
@@ -52,13 +47,28 @@ socket.on('producto_modificado', (data) => {
 })
 
 const addProduct = (prodId) => {
-    if (cartId === undefined){
-        alert('Inicie sesión para agregar productos.')
-    } else {
-        fetch(`/api/carts/${cartId}/products/${prodId}`, {
-        method: 'PUT',
+    fetch(`/api/sessions`, {
+        method: 'GET',
         })
+    .then (response => response.json())
+    .then (user => {
+        if (user.cartId === undefined){       
+            alert('Inicie sesión para agregar productos al carrito.');
 
-        alert('Producto agregado al carrito.')
-    }
+            location.assign('/login');
+        } else {
+            fetch(`/api/carts/${user.cartId}/products/${prodId}`, {
+            method: 'PUT',
+            })
+
+            alert('Producto agregado al carrito.');
+        }
+    })
+    .catch (e => console.log(e))
+}
+
+const logout = () => {
+    fetch(`/api/sessions/logout`, {
+        method: 'GET',
+        })
 }

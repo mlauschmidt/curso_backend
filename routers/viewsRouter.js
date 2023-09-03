@@ -23,6 +23,7 @@ viewsRouter.get('/home', async (req, res) => {
 })
 
 viewsRouter.get('/products', async (req, res) => {
+    const user = req.session.user;
     const cart = req.query.cart;
     const limit = req.query.limit || 5;
     const page = req.query.page || 1;
@@ -36,13 +37,14 @@ viewsRouter.get('/products', async (req, res) => {
         } else {
             return false;
         }
-    }
+    } 
     hasCartParam();
 
     const params = {
         title: 'Productos',
         products,
         hasCartParam: hasCartParam(),
+        user,
         cart,
         cartLink: `&cart=${cart}`
     }
@@ -62,20 +64,35 @@ viewsRouter.get('/carts/:cid', async (req, res) => {
     return res.render('cart', params);
 })
 
-viewsRouter.post('/user', async (req, res) => {
-    const user = req.body.user;
-    const cart = await cartManager.createCart();
-    console.log(cart);
+const sessionMiddleware = (req, res, next) => {
+    if (req.session.user) {
+        return res.redirect('/profile');
+    }
 
-    return res.redirect(`/products?cart=${cart._id}`);
+    return next();
+}
+
+viewsRouter.get('/register', sessionMiddleware, (req, res) => {
+    return res.render('register', {title: 'Registrarse'});
 })
 
-//Chat
-viewsRouter.get('/login', (req, res) => {
+viewsRouter.get('/login', sessionMiddleware, (req, res) => {
     return res.render('login', {title: 'Inicio de sesión'});
 })
 
-viewsRouter.post('/login', async (req, res) => {
+viewsRouter.get('/profile', (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    return next();
+}, (req, res) => {
+    const user = req.session.user;
+
+    return res.render('profile', {user});
+})
+
+/* viewsRouter.post('/login', async (req, res) => {
     const user = req.body.user;
 
     return res.redirect(`/chat?username=${user}`);
@@ -83,6 +100,6 @@ viewsRouter.post('/login', async (req, res) => {
 
 viewsRouter.get('/chat', (req, res) => {
     return res.render('chat', {title: 'Chat'});
-})
+}) */
 
 module.exports = viewsRouter;

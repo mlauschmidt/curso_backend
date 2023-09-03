@@ -50,15 +50,25 @@ class CartManager {
         const cart = await this.getCartById(cartId);
         
         if (cart) {
-            const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
+            const productExists = cart.products.findIndex(product => product.product._id.toString() === productId);
 
-            if (productExists) {
+            if (!(productExists === -1)) {
                 try {
-                    const updateCart = await this.model.updateOne({_id: cartId, 'products.product': productId}, {$set: {'products.$.quantity': quantity}});
+                    const qty = () => {
+                        if (quantity){
+                            return quantity; 
+                        } else {
+                            quantity = cart.products[productExists].quantity + 1
+
+                            return quantity;
+                        }
+                    } 
+
+                    const updateCart = await this.model.updateOne({_id: cartId, 'products.product': productId}, {$set: {'products.$.quantity': qty()}});
 
                     console.log('Carrito actualizado correctamente.');
-                    
-                    return updateCart;
+
+                    return {status: updateCart, quantity};
                 } catch (err) {
                     console.log('Error al actualizar el carrito.', err);
                     throw new Error('Error al actualizar el carrito.');
@@ -67,14 +77,14 @@ class CartManager {
                 try {
                     const addProduct = {
                         product: productId,
-                        quantity: quantity
+                        quantity: quantity || 1
                     }
-    
+
                     const updateCart = await this.model.updateOne({_id: cartId}, {$push: {products: addProduct}});
 
                     console.log('Carrito actualizado correctamente.');
     
-                    return updateCart;
+                    return {status: updateCart, quantity: addProduct.quantity};
                 } catch (err) {
                     console.log('Error al actualizar el carrito.', err);
                     throw new Error('Error al actualizar el carrito.');
@@ -91,7 +101,7 @@ class CartManager {
 
         if (cart) {
             try {
-                await this.model.deleteOne({_id: cartId});
+                await this.model.updateOne({_id: cartId}, {$set: {products: []}});
 
                 console.log('Carrito eliminado correctamente.');
 
@@ -110,6 +120,7 @@ class CartManager {
         const cart = await this.getCartById(cartId);
 
         if (cart) {
+            //modificar esto como hice con updateproduct
             const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
 
             if (productExists) {

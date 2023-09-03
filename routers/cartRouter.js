@@ -49,14 +49,16 @@ const cartRouterFn = (io) => {
         try {
             const cartId = req.params.cid;
             const productId = req.params.pid;
-            const quantity = req.body.quantity || 1;
+            const quantity = req.body.quantity;
+
             const updatedCart = await cartManager.updateCart(cartId, productId, quantity);
             const product = await productManager.getProductById(productId);
-            const updatedProd = {product, quantity, cartId};
+
+            const updatedProd = {product, quantity: updatedCart.quantity, cartId};
 
             io.emit('carrito_actualizado', JSON.stringify(updatedProd));
 
-            return res.status(200).json(updatedCart);
+            return res.status(200).json({...updatedCart.status});
         } catch (err) {
             return res.status(400).json({
                 error: err.message
