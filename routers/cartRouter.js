@@ -52,7 +52,7 @@ const cartRouterFn = (io) => {
             const quantity = req.body.quantity;
 
             const updatedCart = await cartManager.updateCart(cartId, productId, quantity);
-            const product = await productManager.getProductById(productId);
+            const product = await productManager.getProductById(productId); //traerlo desde el manager
 
             const updatedProd = {product, quantity: updatedCart.quantity, cartId};
 

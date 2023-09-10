@@ -23,7 +23,7 @@ viewsRouter.get('/home', async (req, res) => {
 })
 
 viewsRouter.get('/products', async (req, res) => {
-    const user = req.session.user;
+    const user = req.user;
     const cart = req.query.cart;
     const limit = req.query.limit || 5;
     const page = req.query.page || 1;
@@ -65,7 +65,7 @@ viewsRouter.get('/carts/:cid', async (req, res) => {
 })
 
 const sessionMiddleware = (req, res, next) => {
-    if (req.session.user) {
+    if (req.user && req.user.cartId) {
         return res.redirect('/profile');
     }
 
@@ -77,19 +77,28 @@ viewsRouter.get('/register', sessionMiddleware, (req, res) => {
 })
 
 viewsRouter.get('/login', sessionMiddleware, (req, res) => {
-    return res.render('login', {title: 'Inicio de sesión'});
+    return res.render('login', {title: 'Iniciar de sesión'});
 })
 
+viewsRouter.get('/recovery-password', sessionMiddleware, (req, res) => {
+    return res.render('recovery-password', {title: 'Reestablecer contraseña'});
+}) 
+
 viewsRouter.get('/profile', (req, res, next) => {
-    if (!req.session.user) {
+    if (!req.user) {
         return res.redirect('/login');
     }
 
     return next();
 }, (req, res) => {
-    const user = req.session.user;
+    const user = req.user;
 
-    return res.render('profile', {user});
+    const params = {
+        title: 'Perfil',
+        user
+    }
+
+    return res.render('profile', params);
 })
 
 /* viewsRouter.post('/login', async (req, res) => {

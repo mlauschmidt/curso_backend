@@ -1,52 +1,64 @@
 const { Router } = require('express');
 const sessionRouter = Router();
 const userModel = require('../dao/models/user.model');
-/* const CartManager = require('../dao/fileSystemCartManager'); */
-const CartManager = require('../dao/mongooseCartManager');
-const cartManager = new CartManager('./carts.json');
+const { createHash, isValidPassword } = require('../utils/passwordHash');
+const passport = require('passport');
 
 sessionRouter.get('/', (req, res) => {
-    const user = req.session.user;
+    const user = req.user;
 
     if (user) {
-        return res.json(req.session.user);
+        return res.json(req.user);
     } else {
         return res.json({});
     }
 })
 
-sessionRouter.post('/register', async (req, res) => {
-    const user = await userModel.create(req.body);
-
+sessionRouter.post('/register', passport.authenticate('register', {failureRedirect: '/failregister'}), async (req, res) => {
     return res.redirect('/login');
 })
 
-sessionRouter.post('/login', async (req, res) => {
-    let user = await userModel.findOne({email: req.body.email});
-    const cart = await cartManager.createCart();
- 
-    if (!user){
+sessionRouter.get('/failregister', (req, res) => {
+    return res.json({
+        error: 'Error al registrarse.'
+    })
+})
+
+sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req, res) => {
+    return res.redirect(`/products?cart=${req.user.cartId}`);
+})
+
+sessionRouter.get('/faillogin', (req, res) => {
+    return res.json({
+        error: 'Error al iniciar sesión.'
+    })
+})
+
+sessionRouter.get('/github', passport.authenticate('github', {scope: ['user: email']}), async (req, res) => {
+
+})
+
+sessionRouter.get('/github-callback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res) => {
+    return res.redirect(`/products?cart=${req.user.cartId}`);
+})
+
+sessionRouter.post('/recovery-password', async (req, res) => {
+    const username = req.body.username;
+    let user = await userModel.findOne({ "$or": [{username: username}, {email: username}]});
+  
+    if (!user) {
         return res.status(401).json({
             error: 'El usuario no existe en el sistema.'
         })
     }
-
-    if (user.password !== req.body.password){
-        return res.status(401).json({
-            error: 'Datos incorrectos.'
-        })
-    }
-
-    user = user.toObject();
-    delete user.password;
-    req.session.user = {...user, cartId: cart._id};
-
-    return res.redirect(`/products?cart=${cart._id}`);
+  
+    const newPassword = createHash(req.body.password);
+    await userModel.updateOne({ email: user.email }, { password: newPassword });
+  
+    return res.redirect('/login');
 })
 
 sessionRouter.get('/logout', (req, res) => {
-    console.log(req.session);
-
     req.session.destroy(err => {
         if (err){
             return res.status(500).json({error: err});
