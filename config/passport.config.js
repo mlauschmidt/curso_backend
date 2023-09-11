@@ -16,8 +16,8 @@ const initializePassport = () => {
                 const user = await userModel.findOne({ "$or": [{username: username}, {email: req.body.email}]});
     
                 if (user) {
-                    console.log('Usuario ya existe.');
-                    return done(null, false);
+                    console.log('Usuario ya registrado.');
+                    return done(null, false, {message: 'Usuario ya registrado.'});
                 }
         
                 const body = req.body;
@@ -38,17 +38,17 @@ const initializePassport = () => {
             try {
                 let user = await userModel.findOne({ "$or": [{username: username}, {email: username}]});
 
-                const cart = await cartManager.createCart();
-
                 if (!user){
                     console.log('El usuario no existe en el sistema.');
-                    return done(null, false);
+                    return done(null, false, {message: 'El usuario no existe en el sistema.'});
                 }
 
                 if (!isValidPassword(password, user.password)){
                     console.log('Datos incorrectos.');
-                    return done(null, false);
+                    return done(null, false, {message: 'Datos incorrectos.'});
                 }
+
+                const cart = await cartManager.createCart();
 
                 user = user.toObject();
                 delete user.password;
@@ -71,10 +71,8 @@ const initializePassport = () => {
         try {
             let user = await userModel.findOne({ "$or": [{username: profile._json.login}, {email: profile._json.email}]});
 
-            const cart = await cartManager.createCart();
-
             if (user) {
-                console.log('Usuario ya existe.');
+                console.log('Usuario ya registrado.');
 
                 user = user.toObject();
                 user.cartId = cart._id;
@@ -87,6 +85,8 @@ const initializePassport = () => {
                 username: profile._json.login,
                 email: profile._json.email
             });
+
+            const cart = await cartManager.createCart();
 
             user = newUser.toObject();
             user.cartId = cart._id;

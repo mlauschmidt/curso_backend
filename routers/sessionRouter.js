@@ -14,24 +14,12 @@ sessionRouter.get('/', (req, res) => {
     }
 })
 
-sessionRouter.post('/register', passport.authenticate('register', {failureRedirect: '/failregister'}), async (req, res) => {
+sessionRouter.post('/register', passport.authenticate('register', {failureRedirect: '/register', failureFlash: true}), async (req, res) => {
     return res.redirect('/login');
 })
 
-sessionRouter.get('/failregister', (req, res) => {
-    return res.json({
-        error: 'Error al registrarse.'
-    })
-})
-
-sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req, res) => {
+sessionRouter.post('/login', passport.authenticate('login', {failureRedirect: '/login', failureFlash: true}), async (req, res) => {
     return res.redirect(`/products?cart=${req.user.cartId}`);
-})
-
-sessionRouter.get('/faillogin', (req, res) => {
-    return res.json({
-        error: 'Error al iniciar sesión.'
-    })
 })
 
 sessionRouter.get('/github', passport.authenticate('github', {scope: ['user: email']}), async (req, res) => {

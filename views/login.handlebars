@@ -1,6 +1,12 @@
 <h1>Iniciar sesión</h1>
 
 <div>
+    {{#if hasError}}
+        <p style="color: red">{{error}}</p>
+    {{/if}}
+</div>
+
+<div>
     <button><a href="/api/sessions/github">Entrar con github</a></button>
 </div>
 <br>

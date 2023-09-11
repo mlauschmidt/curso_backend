@@ -31,19 +31,10 @@ viewsRouter.get('/products', async (req, res) => {
     const query = req.query.query;    
     const products = await productManager.getProducts(limit, page, sort, query);
 
-    const hasCartParam = () => {
-        if (cart === undefined){
-            return true;
-        } else {
-            return false;
-        }
-    } 
-    hasCartParam();
-
     const params = {
         title: 'Productos',
         products,
-        hasCartParam: hasCartParam(),
+        hasCartParam: cart === undefined,
         user,
         cart,
         cartLink: `&cart=${cart}`
@@ -73,11 +64,27 @@ const sessionMiddleware = (req, res, next) => {
 }
 
 viewsRouter.get('/register', sessionMiddleware, (req, res) => {
-    return res.render('register', {title: 'Registrarse'});
+    const error = req.flash('error')[0];
+
+    const params = {
+        title: 'Registrarse',
+        error,
+        hasError: error !== undefined
+    }
+
+    return res.render('register', params);
 })
 
 viewsRouter.get('/login', sessionMiddleware, (req, res) => {
-    return res.render('login', {title: 'Iniciar de sesión'});
+    const error = req.flash('error')[0];
+
+    const params = {
+        title: 'Inicar sesión',
+        error,
+        hasError: error !== undefined
+    }
+
+    return res.render('login', params);
 })
 
 viewsRouter.get('/recovery-password', sessionMiddleware, (req, res) => {

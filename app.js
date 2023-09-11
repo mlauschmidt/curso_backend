@@ -11,6 +11,7 @@ const productRouterFn = require('./routers/productRouter');
 const cartRouterFn = require('./routers/cartRouter');
 const passport = require('passport');
 const initializePassport = require('./config/passport.config');
+const flash = require('connect-flash');
 
 //Configuracion express
 const app = express();
@@ -44,6 +45,9 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Configuracion flash
+app.use(flash());
 
 //Configuracion websockets
 const httpServer = app.listen(8080, () => {

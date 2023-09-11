@@ -1,6 +1,12 @@
 <h1>Registro</h1>
 
 <div>
+    {{#if hasError}}
+        <p style="color: red">{{error}}</p>
+    {{/if}}
+</div>
+
+<div>
     <form action="/api/sessions/register" method="POST">
         Nombre: <input type="text" name="name"><br><br>
         Apellido: <input type="text" name="lastname"><br><br>
