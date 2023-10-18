@@ -1,0 +1,28 @@
+<h1>Carrito de compras</h1>
+
+<div>
+    <table>
+        <tbody id="cartContainer">
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+            {{#each cart.products}}
+                <tr id="prod-{{this.product._id}}{{this.product.id}}">
+                    <td>{{this.product.title}}</td>
+                    <td>{{this.product.price}}</td>
+                    <td>{{this.quantity}}</td>
+                    <td><button style="margin: 10px" class="deleteButton" id="deleteButton_{{this.product._id}}{{this.product.id}}" onclick="deleteProduct('{{this.cartId}}','{{this.product._id}}{{this.product.id}}')">Eliminar</button></td>          
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <button class="goToProductsButton" id="goToProductsButton_{{cart._id}}"><a href="http://localhost:8080/products?cart={{cart._id}}">Seguir comprando</a></button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/cart.js"></script>

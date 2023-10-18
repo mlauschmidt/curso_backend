@@ -1,0 +1,26 @@
+<h1>Iniciar sesión</h1>
+
+<div>
+    {{#if hasError}}
+        <p style="color: red">{{error}}</p>
+    {{/if}}
+</div>
+
+<div>
+    <button id="sendButtonGithub"><a href="/api/sessions/github">Entrar con github</a></button>
+</div>
+<br>
+<div>
+    <form action="/api/sessions/login" method="POST">
+        Email/Username: <input type="text" name="username" id="usernameLogin"><br><br>
+        Contraseña: <input type="password" name="password" id="passwordLogin"><br><br>
+
+        <input type="submit" value="Iniciar sesión" id="sendButtonLogin">
+    </form>
+</div>
+<br>
+<div>
+    <a href="/recovery-password">Olvide mi contraseña</a>
+</div>
+
+<script src="/js/login.js"></script>
