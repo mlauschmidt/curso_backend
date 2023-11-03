@@ -8,7 +8,23 @@ const sessionRouter = require('./routers/sessionRouter');
 const productRouterFn = require('./routers/productRouter');
 const cartRouterFn = require('./routers/cartRouter');
 const passport = require('passport');
-const initializePassport = require('./utils/config/passport.config');
+const initializePassport = require('./utils/passport/passport.config');
+const {Command} = require('commander');
+const dotenv = require('dotenv');
+const configFn = require('./utils/config');
+
+//Configuracion argumentos
+const program = new Command();
+program.option('--mode <mode>', 'Modo de trabajo', 'local');
+program.parse();
+const options = program.opts();
+console.log(options);
+
+//Configuracion variables de entorno
+dotenv.config({
+    path: `./.env.${options.mode}`
+});
+const config = configFn();
 
 //Configuracion express
 const app = express();
@@ -17,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('view/public'));
 
 //Configuracion base de datos
-const MONGODB_CONNECT = 'mongodb+srv://mlauraschmidt:d3Ep0z6YNqHNFK2d@cluster0.xj9o7mz.mongodb.net/ecommerce?retryWrites=true&w=majority'
+const MONGODB_CONNECT = `mongodb+srv://${config.db_user}:${config.db_password}@${config.db_host}/${config.db_name}?retryWrites=true&w=majority`
 mongoose.connect(MONGODB_CONNECT)
     .catch(e => {
         console.log('No se pudo conectar a la base de datos.', e);
@@ -27,7 +43,6 @@ mongoose.connect(MONGODB_CONNECT)
 //Configuracion passport
 initializePassport();
 app.use(passport.initialize());
-/* app.use(passport.session()); */ 
 
 //Configuracion websockets
 const httpServer = app.listen(8080, () => {
@@ -49,5 +64,3 @@ const productRouter = productRouterFn(io);
 app.use('/api/products', productRouter);
 const cartRouter = cartRouterFn(io);
 app.use('/api/carts', cartRouter);
-
-//FALTA TERMINAR DE REVISAR ESTE ARCHIVO POR SI HAY QUE HACER ALGUN CAMBIO, EN LAS ESTRATEGIAS, Y PRINCIPALMENTE EN EL ENDPOINT DE PROFILE

@@ -26,9 +26,12 @@ const productSchema = mongoose.Schema({
     },
     stock: {
         type: Number,
-        required: true
+        required: true,
     },
-    status: Boolean
+    status: {
+        type: Boolean,
+        default: true
+    }
 })
 
 productSchema.plugin(mongoosePaginate);

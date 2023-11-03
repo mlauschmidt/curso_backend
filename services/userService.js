@@ -17,7 +17,7 @@ class UserService {
     async validatePassword (userId, password) {
         let user = await this.storage.getUser(null, null, userId);
         
-        //manejo de error cuando el usuario esta creado pero no tiene contraseña (no hay user.password), como cuando se creo por github
+        //manejo de error cuando el usuario esta creado pero no tiene contraseña (no hay user.password), como cuando se crea por github
 
         if (isValidPassword(password, user.password)){
             user = await this.deletePassword(user.toObject());
@@ -33,8 +33,8 @@ class UserService {
         return this.storage.getUsers();
     }
   
-    async getUser (username, email, id) {
-        let user = await this.storage.getUser(username, email, id);
+    async getUser (username, email, id, cartId) {
+        let user = await this.storage.getUser(username, email, id, cartId);
 
         if (user.password) {
             user = await this.deletePassword(user.toObject());

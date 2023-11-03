@@ -1,10 +1,10 @@
 const passportLocal = require('passport-local');
 const LocalStrategy = passportLocal.Strategy;
-const UserService = require('../../services/userService');
+const UserService = require('../../../services/userService');
 const userService = new UserService();
-const CartService = require('../../services/cartService');
+const CartService = require('../../../services/cartService');
 const cartService = new CartService();
-const { generateToken, verifyToken } = require('../jwt');
+const generateToken = require('../../jwt');
 
 const loginLocalStrategy = new LocalStrategy(
     {usernameField: 'username'},

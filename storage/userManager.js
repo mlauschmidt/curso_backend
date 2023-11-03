@@ -17,8 +17,8 @@ class UserManager {
         }
     }
 
-    async getUser (username, email, id) {
-        const user = await this.model.findOne({"$or": [{username}, {email}, {_id: id}]});
+    async getUser (username, email, id, cartId) {
+        const user = await this.model.findOne({"$or": [{username}, {email}, {_id: id}, {cartId}]});
 
         if (user) {
             return user;

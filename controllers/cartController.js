@@ -51,11 +51,11 @@ class CartController {
             const quantity = req.body.quantity;
 
             const updatedCart = await this.service.updateCart(cartId, productId, quantity);
-            const product = await this.productService.getProductById(productId); //traerlo desde el manager como en products
+            const product = await this.productService.getProductById(productId); 
 
             const updatedProd = {product, quantity: updatedCart.quantity, cartId};
 
-            io.emit('carrito_actualizado', JSON.stringify(updatedProd));
+            io.emit('producto_agregado_carrito', JSON.stringify(updatedProd));
 
             return res.status(200).json({...updatedCart.status});
         } catch (err) {
@@ -84,7 +84,7 @@ class CartController {
             const productId = req.params.pid;
             const deletedProd = await this.service.deleteProductInCart(cartId, productId);
 
-            io.emit('producto_eliminado', JSON.stringify(deletedProd));
+            io.emit('producto_eliminado_carrito', JSON.stringify(deletedProd));
         
             return res.status(204).json({});
         } catch (err) {

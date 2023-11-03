@@ -39,7 +39,7 @@ class ProductController {
             const data = req.body;
             const newProduct= await this.service.createProduct(data);
 
-            io.emit('nuevo_producto', JSON.stringify(newProduct));
+            io.emit('producto_agregado_inventario', JSON.stringify(newProduct));
     
             return res.status(201).json(newProduct);
         } catch (err) {
@@ -55,7 +55,7 @@ class ProductController {
             const newData = req.body;
             const updatedProduct = await this.service.updateProduct(prodId, newData);
 
-            io.emit('producto_modificado', JSON.stringify(updatedProduct));
+            io.emit('producto_modificado_inventario', JSON.stringify(updatedProduct));
     
             return res.status(200).json(updatedProduct);
         } catch (err) {
@@ -65,10 +65,12 @@ class ProductController {
         }
     }
   
-    async deleteProduct (req, res) {
+    async deleteProduct (req, res, io) {
         try {
             const prodId = req.params.pid;
             const product = await this.service.deleteProduct(prodId);
+
+            io.emit('producto_eliminado_inventario', JSON.stringify(product));
 
             return res.status(204).json({});
         } catch (err) {

@@ -34,7 +34,6 @@ class ProductManager {
         let products = await this.model.paginate(query, {limit, page, sort: sort});
 
         products = {
-            /* status: 'success/error', */
             payload: products.docs.map(product => product.toObject()),
             totalPages: products.totalPages,
             prevPage: products.prevPage,
@@ -73,19 +72,8 @@ class ProductManager {
         const product = await this.model.findOne({code: data.code});
 
         if (!product) {
-            const newProduct = {
-                title: data.title,
-                description: data.description,
-                price: data.price,
-                thumbnail: data.thumbnail,
-                code: data.code,
-                stock: data.stock ?? "Sin stock",
-                status: true,
-                category: data.category
-            }; //HASTA ACA ES INNECESARIO, SE TIENE QUE PODER DEFINIR EN EL MODELO. REVISAR
-
             try {
-                const productCreated = await this.model.create(newProduct);
+                const productCreated = await this.model.create(data);
 
                 console.log('Producto agregado correctamente.');
 

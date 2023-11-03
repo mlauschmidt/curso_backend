@@ -1,36 +1,9 @@
 const socket = io();
 
-(() => {
-    const authToken = localStorage.getItem('authToken');
-    const titleName = document.getElementById('titleName');
+const productsContainer = document.getElementById('productsContainer');
 
-    if (authToken) {
-        fetch(`api/sessions`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
-            }
-        })
-        .then(res => res.json())
-        .then(user => {
-            titleName.innerHTML = 
-            `<h1>Bienvenid@ ${user.name}</h1>
-                
-            <div style="display: flex; align-items: center">
-                <button style="padding: 5px; margin: 0px 5px" class="seeCartButton" id="seeCartButton_${user.cartId}"><a href="/carts/${user.cartId}">Ver carrito de compras</a></button>
-        
-                <button style="padding: 5px; margin: 0px 5px" class="logoutButton" onclick="logout('${user.cartId}')"><a href="/products">Cerrar sesión</a></button>
-            </div>`;
-        })
-        .catch (e => console.log(e))
-    }
-})()
-
-socket.on('nuevo_producto', (data) => {
+socket.on('producto_agregado_inventario', (data) => {
     const product = JSON.parse(data);
-
-    const productsContainer = document.getElementById('productsContainer');
 
     productsContainer.innerHTML += 
     `<div id="prod-${product._id || product.id}" style="border-bottom: 1px solid black">   
@@ -47,16 +20,16 @@ socket.on('nuevo_producto', (data) => {
                 </ul>
             </li>
         </ul>
-        <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProduct('${product._id || product.id}')">Agregar al carrito</button>
+        <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProductToCart('${product._id || product.id}')">Agregar al carrito</button>
     </div>`;
 })
 
-socket.on('producto_modificado', (data) => {
+socket.on('producto_modificado_inventario', (data) => {
     const product = JSON.parse(data);
 
-    const updatedProduct = document.getElementById(`prod-${product._id || product.id}`);
+    const productContainer = document.getElementById(`prod-${product._id || product.id}`);
 
-    updatedProduct.innerHTML = 
+    productContainer.innerHTML = 
     `<ul>
         <li> Nombre: ${product.title}
             <ul> 
@@ -70,28 +43,37 @@ socket.on('producto_modificado', (data) => {
             </ul>
         </li>
     </ul>
-    <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProduct('${product._id || product.id}')">Agregar al carrito</button>`;
+    <button style="margin: 0px 0px 20px 20px" class="addToCartButton" id="addToCartButton_${product._id || product.id}" onclick="addProductToCart('${product._id || product.id}')">Agregar al carrito</button>`;
 })
 
+socket.on('producto_eliminado_inventario', (data) => {
+    const product = JSON.parse(data);
+
+    const productContainer = document.getElementById(`prod-${product._id || product.id}`);
+
+    productsContainer.removeChild(productContainer);
+})
+
+const authToken = localStorage.getItem('authToken');
 const fetchOptions = {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        'Authorization': `Bearer ${authToken}`
     }
 }
 
-const addProduct = (prodId) => {
+const addProductToCart = (prodId) => {
     fetch(`/api/sessions`, fetchOptions)
     .then (res => res.json())
     .then (user => {
         if (user.cartId === undefined){       
             alert('Inicie sesión para agregar productos al carrito.');
 
-            location.assign('/login');
+            window.location.href = '/login';
         } else {
             fetch(`/api/carts/${user.cartId}/products/${prodId}`, {
-            method: 'PUT',
+            method: 'PUT'
             })
 
             alert('Producto agregado al carrito.');
@@ -100,15 +82,19 @@ const addProduct = (prodId) => {
     .catch (e => console.log(e))
 }
 
-const logout = (cartId) => {
+const logout = () => {
     fetch(`/api/sessions`, fetchOptions)
     .then (res => res.json())
-    .then (() => {
+    .then (user => {
         localStorage.removeItem('authToken')
     
-        fetch(`/api/carts/${cartId}`, {
+        fetch(`/api/carts/${user.cartId}`, {
             method: 'DELETE',
-            })
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
     })
     .then (() => location.assign('/login')) 
     .catch (e => console.log(e))

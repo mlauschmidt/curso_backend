@@ -13,7 +13,7 @@
                     <td>{{this.product.title}}</td>
                     <td>{{this.product.price}}</td>
                     <td>{{this.quantity}}</td>
-                    <td><button style="margin: 10px" class="deleteButton" id="deleteButton_{{this.product._id}}{{this.product.id}}" onclick="deleteProduct('{{this.cartId}}','{{this.product._id}}{{this.product.id}}')">Eliminar</button></td>          
+                    <td><button style="margin: 10px" class="deleteProdCart" id="deleteProdCart_{{this.product._id}}{{this.product.id}}" onclick="deleteProdCart('{{this.cartId}}','{{this.product._id}}{{this.product.id}}')">Eliminar</button></td>          
                 </tr>
             {{/each}}
         </tbody>
@@ -21,7 +21,7 @@
 </div>
 
 <div>
-    <button class="goToProductsButton" id="goToProductsButton_{{cart._id}}"><a href="http://localhost:8080/products?cart={{cart._id}}">Seguir comprando</a></button>
+    <button style="margin: 20px 0px 20px 20px" class="goToProductsButton" id="goToProductsButton_{{userId}}"><a href="http://localhost:8080/products?id={{userId}}">Seguir comprando</a></button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

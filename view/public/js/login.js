@@ -22,7 +22,17 @@ sendButtonLogin.addEventListener('click', (e) => {
     .then(data => {
         localStorage.setItem('authToken', data.token)
 
-        window.location.href = `/products?cart=${data.cartId}`
+        fetch('api/sessions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        })  
+        .then(res => res.json())
+        .then(user => {
+            window.location.href = `/products?id=${user._id}`
+        })
     })
     .catch (e => console.log(e))
 })

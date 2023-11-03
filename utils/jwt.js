@@ -8,19 +8,4 @@ const generateToken = (payload) => {
     return token;
 }
 
-const verifyToken = (token) => {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, PRIVATE_KEY, (err, payload) => {
-            if (err) {
-                return reject(err);
-            }
-
-            return resolve(payload);
-        })
-    })
-}
-
-module.exports = {
-  generateToken,
-  verifyToken
-}
+module.exports = generateToken;

@@ -1,88 +1,65 @@
 const { Router } = require('express');
 const viewsRouter = Router();
-/* const ProductManager = require('../storage/fileSystemProductManager'); */
-const ProductManager = require('../storage/productManager');
-const productManager = new ProductManager('./products.json');
-/* const CartManager = require('../storage/fileSystemCartManager'); */
-const CartManager = require('../storage/cartManager');
-const cartManager = new CartManager('./carts.json');
-const passport = require('passport');
-
-const passportCall = (strategy) => {
-    return (req, res, next) => {
-      passport.authenticate(strategy, (err, user, info) => {
-        if (err) {
-          return next(err)
-        }
-  
-        if (!user) {
-          return res.status(401).json({
-            error: info.messages ? info.messages : info.toString()
-          })
-        }
-  
-        req.user = user
-  
-        return next()
-      })(req, res, next)
-    }
-}
-
-viewsRouter.get('/home', async (req, res) => {
-    const limit = req.query.limit || 10;
-    const page = req.query.page || 1;
-    const sort = req.query.sort;
-    const query = req.query.query;
-    let products = await productManager.getProducts(limit, page, sort, query);
-
-    const params = {
-        title: 'Inicio',
-        products
-    }
-
-    return res.render('home', params);
-})
+const UserService = require('../services/userService');
+const userService = new UserService();
+const ProductService = require('../services/productService');
+const productService = new ProductService();
+const CartService = require('../services/cartService');
+const cartService = new CartService();
 
 viewsRouter.get('/products', async (req, res) => {
-    const cart = req.query.cart; 
+    const id = req.query.id;
+    const user = await userService.getUser(null, null, id);
     const limit = req.query.limit || 5;
     const page = req.query.page || 1;
     const sort = req.query.sort;
     const query = req.query.query;    
-    const products = await productManager.getProducts(limit, page, sort, query);
+    const products = await productService.getProducts(limit, page, sort, query);
 
     const params = {
         title: 'Productos',
         products,
-        hasCartParam: cart === undefined,
-        cart,
-        cartLink: `&cart=${cart}`
+        user,
+        userLogged: user._id !== undefined,
+        hasIdParam: id === undefined,
+        idLink: `&id=${id}`
     }
 
-    return res.render('products', params);
+    if (user.role === 'admin') {
+        return res.render('inventory', params);
+    } else {
+        return res.render('products', params);
+    }
 })
 
-viewsRouter.get('/carts/:cid', async (req, res) => {
+viewsRouter.get('/carts/:cid([0-9a-fA-F]{24})', async (req, res) => {
     const cartId = req.params.cid;
-    const cart = await cartManager.getCartById(cartId);
-    
+    const cart = await cartService.getCartById(cartId);
+    const user = await userService.getUser(null, null, null, cartId);
+
     const params = {
         title: 'Carrito de compras',
-        cart
+        cart,
+        userId: user._id
     }
 
     return res.render('cart', params);
 })
 
-const sessionMiddleware = (req, res, next) => {
+viewsRouter.get('/carts/:cid', (req, res) => {
+    return res.send(`Identificador de carrito de compras (${req.params.cid}) inválido.`);
+})
+
+//REVISAR ESTE MIDDLEWARE
+/* const sessionMiddleware = (req, res, next) => {
     if (req.user && req.user.cartId) {
         return res.redirect(`/products?cart=${req.user.cartId}`);
     }
 
     return next();
-}
+} */
 
-viewsRouter.get('/register', sessionMiddleware, (req, res) => {
+viewsRouter.get('/register', /* sessionMiddleware, */ (req, res) => {
     const params = {
         title: 'Registrarse'
     }
@@ -90,7 +67,7 @@ viewsRouter.get('/register', sessionMiddleware, (req, res) => {
     return res.render('register', params);
 })
 
-viewsRouter.get('/login', sessionMiddleware, (req, res) => {
+viewsRouter.get('/login', /* sessionMiddleware, */ (req, res) => {
     const params = {
         title: 'Inicar sesión'
     }
@@ -102,17 +79,18 @@ viewsRouter.get('/github-data', (req, res) => {
     return res.render('github');
 })
 
-viewsRouter.get('/recovery-password', sessionMiddleware, (req, res) => {
-    return res.render('recovery-password', {title: 'Reestablecer contraseña'});
+viewsRouter.get('/recovery-password', /* sessionMiddleware, */ (req, res) => {
+    const params = {
+        title: 'Reestablecer contraseña'
+    }
+
+    return res.render('recovery-password', params);
 }) 
 
-viewsRouter.get('/profile', passportCall('jwt'), (req, res, next) => {
-    const user = req.user;
-    console.log(user);
-
+//TERMINAR LAS VISTAS DE ESTE ENDPOINT
+viewsRouter.get('/profile', (req, res) => {
     const params = {
         title: 'Perfil',
-        user
     }
 
     return res.render('profile', params);

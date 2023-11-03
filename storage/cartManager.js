@@ -20,10 +20,6 @@ class CartManager {
 
     async getCartById (cartId) {
         const cart = await this.model.findById(cartId).populate('products.product').lean();
-        cart.products = cart.products.map(product => product = {...product, cartId: cartId});
-
-        //Influye en algo si borro la linea 23 donde agrego el cartId a cada producto del carrito?
-        //Si, en el deleteProduct de cart.js, pero puedo reemplazarlo tomando el id del carrito de la sesion como hago en addproduct
 
         if (cart) {
             return cart;
@@ -123,7 +119,6 @@ class CartManager {
         const cart = await this.getCartById(cartId);
 
         if (cart) {
-            //modificar esto como hice con updateproduct
             const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
 
             if (productExists) {
