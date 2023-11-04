@@ -25,18 +25,19 @@ class UserMiddlewares {
         }
     }
     
-    authorization (role) {
+    authorization (...role) {
         return (req, res, next) => {
-            /* console.log({authorizationMiddleware: req.user}) */
+            const isValidRole = role.includes(req.user.role);
+
             if (!req.user) {
                 return res.status(401).json({
-                error: 'Debes iniciar sesión'
+                    error: 'Debes iniciar sesión'
                 })     
             }
         
-            if (req.user.role !== role) {
+            if (!isValidRole) {
                 return res.status(403).json({
-                error: 'No tienes permiso para consumir este recurso'
+                    error: 'No tienes permiso para consumir este recurso'
                 })
             }
         

@@ -29,7 +29,7 @@ sessionRouter.get('/github', usersMiddlewares.authentication({strategy: 'github'
 })
 
 sessionRouter.get('/github-callback', usersMiddlewares.authentication({strategy: 'github'}, '/login'), async (req, res) => {
-    return res.redirect(`/github-data?token=${req.user.token}`);
+    return res.redirect(`/github-data?token=${req.user}`);
 })
 
 sessionRouter.post('/recovery-password', async (req, res) => {

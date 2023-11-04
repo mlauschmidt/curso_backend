@@ -6,10 +6,12 @@ const headerExtractor = (req) => {
     return req.headers && req.headers['authorization'] && req.headers['authorization'].replace('Bearer ', '')
 }
 
-const jwtStrategy = new JWTStrategy({
+const jwtOptions = {
     jwtFromRequest: extractJWT.fromExtractors([headerExtractor]),
-    secretOrKey: 'jwtsecret'
-}, (jwtPayload, done) => {
+    secretOrKey: 'jwtsecret' /* process.env.JWT_PRIVATE_KEY */
+}
+
+const jwtStrategy = new JWTStrategy(jwtOptions, (jwtPayload, done) => {
     if (!jwtPayload.user) {
         console.log('El usuario no existe en el sistema.');
         return done(null, false, {message: 'Token inválido'});

@@ -33,7 +33,7 @@ const gitHubStrategy = new GitHubStrategy({
             const token = generateToken(user);
 
             /* console.log({github: user, token}); */
-            return done(null, {token, cartId: user.cartId});
+            return done(null, token);
         }
 
         const cart = await cartService.createCart();
@@ -42,7 +42,7 @@ const gitHubStrategy = new GitHubStrategy({
         const token = generateToken(newUser);
 
         /* console.log({githubnew: newUser}); */
-        return done(null, {token, cartId: user.cartId});
+        return done(null, token);
     } catch (e) {
         return done(e);
     }

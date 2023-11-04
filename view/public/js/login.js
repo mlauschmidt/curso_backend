@@ -20,7 +20,7 @@ sendButtonLogin.addEventListener('click', (e) => {
     })  
     .then(res => res.json())
     .then(data => {
-        localStorage.setItem('authToken', data.token)
+        localStorage.setItem('authToken', data)
 
         fetch('api/sessions', {
             method: 'GET',

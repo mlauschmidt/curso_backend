@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const DB = require('./db/singleton');
 const socketServer = require('./utils/io');
 const handlebars = require('express-handlebars');
 const viewsRouter = require('./routers/viewsRouter');
@@ -15,7 +15,7 @@ const configFn = require('./utils/config');
 
 //Configuracion argumentos
 const program = new Command();
-program.option('--mode <mode>', 'Modo de trabajo', 'local');
+program.option('--mode <mode>', 'Modo de trabajo', 'dev');
 program.parse();
 const options = program.opts();
 console.log(options);
@@ -24,7 +24,7 @@ console.log(options);
 dotenv.config({
     path: `./.env.${options.mode}`
 });
-const config = configFn();
+const settings = configFn();
 
 //Configuracion express
 const app = express();
@@ -33,12 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('view/public'));
 
 //Configuracion base de datos
-const MONGODB_CONNECT = `mongodb+srv://${config.db_user}:${config.db_password}@${config.db_host}/${config.db_name}?retryWrites=true&w=majority`
-mongoose.connect(MONGODB_CONNECT)
-    .catch(e => {
-        console.log('No se pudo conectar a la base de datos.', e);
-        process.exit();
-    })
+const dbConnection = DB.getConnection(settings);
 
 //Configuracion passport
 initializePassport();

@@ -31,7 +31,7 @@ const loginLocalStrategy = new LocalStrategy(
                 const token = generateToken(userValidated);
 
                 /* console.log({login: userValidated}); */
-                return done(null, {token, cartId: userValidated.cartId});
+                return done(null, token);
             } else {
                 console.log('Datos incorrectos.');
                 return done(null, false, {message: 'Datos incorrectos.'});

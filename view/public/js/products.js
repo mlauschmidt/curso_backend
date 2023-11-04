@@ -73,7 +73,11 @@ const addProductToCart = (prodId) => {
             window.location.href = '/login';
         } else {
             fetch(`/api/carts/${user.cartId}/products/${prodId}`, {
-            method: 'PUT'
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
             })
 
             alert('Producto agregado al carrito.');
