@@ -1,0 +1,91 @@
+<div>
+    <div id="titleName" style="display: flex; justify-content: space-between">
+        <h1>Bienvenid@ {{user.name}}</h1>
+            
+        <div style="display: flex; align-items: center">
+            <button style="padding: 5px; margin: 0px 5px" class="logoutButton" onclick="logout()">Cerrar sesión</button>
+        </div>
+    </div>
+    <h1>Productos</h1>
+    <h3>Agregar nuevo producto:</h3>
+    <div style="border-bottom: 1px solid black">
+        <form action="/api/products" method="POST">
+            Nombre: <input id="productTitle" type="text" name="title"><br><br>
+            Descripción: <input id="productDescription" type="text" name="description"><br><br>
+            Precio: <input id="productPrice" type="text" name="price"><br><br>
+            Imágenes: <input id="productThumbnail" type="text" name="thumbnail"><br><br>
+            Código: <input id="productCode" type="text" name="code"><br><br>
+            Stock: <input id="productStock" type="text" name="stock"><br><br>
+            Categoría: <input id="productCategory" type="text" name="category"><br><br>
+
+            <input style="margin: 0px 0px 20px 0px" id="sendProductButton" type="submit" value="Agregar">
+        </form>
+    </div>
+    <div id="productsContainer">    
+        {{#each products.payload}}
+            <div id="prod-{{this.id}}" style="border-bottom: 1px solid black">
+                <ul>
+                    <li>Nombre: {{this.title}}
+                        <ul>
+                            <li>Id: {{this.id}}</li>
+                            <li>Descripción: {{this.description}}</li>
+                            <li>Precio: {{this.price}}</li>
+                            <li>Imágenes: {{this.thumbnail}}</li>
+                            <li>Código: {{this.code}}</li>
+                            <li>Stock: {{this.stock}}</li>
+                            <li>Categotría: {{this.category}}</li>
+                        </ul>
+                    </li>
+                </ul>
+                <button style="margin: 0px 0px 20px 20px" class="deleteProdList" id="deleteProdList_{{this.id}}" onclick="deleteProdList('{{this.id}}')">Eliminar</button>
+                <button style="margin: 0px 0px 20px 20px" class="updateProdButton" id="updateProdButton_{{this.id}}" onclick="updateProdButton('{{this.id}}')">Editar</button>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+{{!-- BOTONES DE PAGINACION --}}
+<div style="margin: 20px">
+    {{#if products.hasPrevPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                <a href="/home/{{user.id}}{{products.prevLink}}{{products.sort}}{{products.query}}">Página previa</a>
+            {{else}}
+                <a href="/home/{{user.id}}{{products.prevLink}}{{products.sort}}">Página previa</a>
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    <a href="/home/{{user.id}}{{products.prevLink}}{{products.query}}{{products.sort}}">Página previa</a>
+                {{else}}
+                    <a href="/home/{{user.id}}{{products.prevLink}}{{products.query}}">Página previa</a>
+                {{/if}}
+            {{else}}
+                <a href="/home/{{user.id}}{{products.prevLink}}">Página previa</a>
+            {{/if}}
+        {{/if}}
+    {{/if}}
+
+    {{#if products.hasNextPage}}
+        {{#if products.hasSortParam}}
+            {{#if products.hasQueryParam}}
+                <a href="/home/{{user.id}}{{products.nextLink}}{{products.sort}}{{products.query}}">Página siguiente</a>
+            {{else}}
+                <a href="/home/{{user.id}}{{products.nextLink}}{{products.sort}}">Página siguiente</a>
+            {{/if}}
+        {{else}}
+            {{#if products.hasQueryParam}}
+                {{#if products.hasSortParam}}
+                    <a href="/home/{{user.id}}{{products.nextLink}}{{products.query}}{{products.sort}}">Página siguiente</a>
+                {{else}}
+                    <a href="/home/{{user.id}}{{products.nextLink}}{{products.query}}">Página siguiente</a>
+                {{/if}}
+            {{else}}
+                <a href="/home/{{user.id}}{{products.nextLink}}">Página siguiente</a>
+            {{/if}}
+        {{/if}}
+    {{/if}}
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/inventory.js"></script>

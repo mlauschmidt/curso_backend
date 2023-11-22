@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "name": "Laura",
+    "lastname": "Schmidt",
+    "username": "mlauschmidt",
+    "email": "laura@mail.com",
+    "age": "29",
+    "password": "$2b$10$Y5LaTgMLfc0P3NHGO36AQ.qPNF2.383EvryUP.jNgyw5wp26kuiZm",
+    "cartId": 1,
+    "role": "admin"
+  }
+]

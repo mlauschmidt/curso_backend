@@ -1,0 +1,148 @@
+[
+  {
+    "id": 1,
+    "title": "Remera",
+    "description": "Remera de morley, mangas cortas",
+    "price": 10,
+    "thumbnail": [
+      "http://www.image.com/remera-1",
+      "http://www.image.com/remera-2",
+      "http://www.image.com/remera-3"
+    ],
+    "code": 123450,
+    "stock": 5,
+    "status": true,
+    "category": "Remeras"
+  },
+  {
+    "id": 2,
+    "title": "Jean",
+    "description": "Jean oxford, tiro alto",
+    "price": 23,
+    "thumbnail": [
+      "http://www.image.com/jean-1",
+      "http://www.image.com/jean-2",
+      "http://www.image.com/jean-3"
+    ],
+    "code": 123451,
+    "stock": 7,
+    "status": true,
+    "category": "Jeans"
+  },
+  {
+    "id": 3,
+    "title": "Sweater",
+    "description": "Sweater de hilo, escote en V",
+    "price": 20,
+    "thumbnail": [
+      "http://www.image.com/sweater-1",
+      "http://www.image.com/sweater-2",
+      "http://www.image.com/sweater-3"
+    ],
+    "code": 123452,
+    "stock": 1,
+    "status": true,
+    "category": "Sweaters"
+  },
+  {
+    "id": 4,
+    "title": "Campera",
+    "description": "Campera de gabardina, con capucha",
+    "price": 40,
+    "thumbnail": [
+      "http://www.image.com/campera-1",
+      "http://www.image.com/campera-2",
+      "http://www.image.com/campera-3"
+    ],
+    "code": 123453,
+    "stock": 2,
+    "status": true,
+    "category": "Camperas"
+  },
+  {
+    "id": 5,
+    "title": "Remera",
+    "description": "Remera de morley, mangas cortas",
+    "price": 10,
+    "thumbnail": [
+      "http://www.image.com/remera-1",
+      "http://www.image.com/remera-2",
+      "http://www.image.com/remera-3"
+    ],
+    "code": 123454,
+    "stock": 5,
+    "status": true,
+    "category": "Remeras"
+  },
+  {
+    "id": 6,
+    "title": "Jean",
+    "description": "Jean oxford, tiro alto",
+    "price": 25,
+    "thumbnail": [
+      "http://www.image.com/jean-1",
+      "http://www.image.com/jean-2",
+      "http://www.image.com/jean-3"
+    ],
+    "code": 123455,
+    "stock": 3,
+    "status": true,
+    "category": "Jeans"
+  },
+  {
+    "id": 7,
+    "title": "Sweater",
+    "description": "Sweater de hilo, escote en V",
+    "price": 20,
+    "thumbnail": [
+      "http://www.image.com/sweater-1",
+      "http://www.image.com/sweater-2",
+      "http://www.image.com/sweater-3"
+    ],
+    "code": 123456,
+    "stock": 1,
+    "status": true,
+    "category": "Sweaters"
+  },
+  {
+    "id": 8,
+    "title": "Campera",
+    "description": "Campera de gabardina, con capucha",
+    "price": 40,
+    "thumbnail": [
+      "http://www.image.com/campera-1",
+      "http://www.image.com/campera-2",
+      "http://www.image.com/campera-3"
+    ],
+    "code": 123457,
+    "stock": 2,
+    "status": true,
+    "category": "Camperas"
+  },
+  {
+    "id": 9,
+    "title": "Sweater",
+    "description": "Sweater de hilo, escote en V",
+    "price": 20,
+    "thumbnail": [
+      "http://www.image.com/sweater-1",
+      "http://www.image.com/sweater-2",
+      "http://www.image.com/sweater-3"
+    ],
+    "code": 123458,
+    "stock": 1,
+    "status": true,
+    "category": "Sweaters"
+  },
+  {
+    "id": 10,
+    "title": "Campera",
+    "description": "Campera de gabardina, con apliques",
+    "price": "35",
+    "thumbnail": "http://www.image.com/campera-1,http://www.image.com/campera-2,http://www.image.com/campera-3",
+    "code": "123459",
+    "stock": "2",
+    "status": true,
+    "category": "Camperas"
+  }
+]
