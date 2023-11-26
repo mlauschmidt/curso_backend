@@ -34,8 +34,7 @@ sendProductButton.addEventListener('click', (e) => {
             category
         }),
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Content-Type': 'application/json'
         }
     })
     .then(res => res.json())
@@ -71,8 +70,7 @@ const updateProdButton = (prodId) => {
     fetch(`/api/products/${prodId}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Content-Type': 'application/json'
         }
     })
     .then (res => res.json())
@@ -130,8 +128,7 @@ const updateProdButton = (prodId) => {
                     category
                 }),
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Content-Type': 'application/json'
                 }
             })
             .then(res => res.json())
@@ -169,8 +166,7 @@ const deleteProdList = (prodId) => {
     fetch(`/api/products/${prodId}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Content-Type': 'application/json'
         }
     })
     .then(() => alert('Producto eliminado del inventario.'))
@@ -185,12 +181,10 @@ socket.on('producto_eliminado_inventario', (data) => {
     productsContainer.removeChild(productContainer);
 })
 
-const authToken = localStorage.getItem('authToken');
 const fetchOptions = {
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
+        'Content-Type': 'application/json'
     }
 }
 
@@ -201,14 +195,18 @@ const logout = () => {
         fetch(`/api/carts/${user.cartId}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Content-Type': 'application/json'
             }
         })
         .then (() => {
-            localStorage.removeItem('authToken')
-
-            location.assign('/home')
+            fetch('/api/sessions/logout', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then (() => location.assign('/home'))
+            .catch (e => console.log(e))
         }) 
         .catch (e => console.log(e))
     })

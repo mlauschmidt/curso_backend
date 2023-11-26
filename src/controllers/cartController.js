@@ -33,7 +33,7 @@ class CartController {
   
     async createCart (req, res) {
         try {
-            const newCart= await this.service.createCart();
+            const newCart = await this.service.createCart();
             
             return res.status(201).json(newCart);
         } catch (err) {
@@ -53,7 +53,7 @@ class CartController {
 
             const prodIndex = updatedCart.products.findIndex(product => product.product.id.toString() === productId);
             const prod = updatedCart.products[prodIndex];
-            const updatedProd = {...prod, cartId};
+            const updatedProd = {...prod, cartId, newTotal: updatedCart.total};
             
             io.emit('producto_agregado_carrito', JSON.stringify(updatedProd));
 
@@ -83,8 +83,10 @@ class CartController {
             const cartId = req.params.cid;
             const productId = req.params.pid;
             const deletedProd = await this.service.deleteProductInCart(cartId, productId);
+            const cart = await this.service.getCartById(cartId);
+            const newTotal = cart.total;
             
-            io.emit('producto_eliminado_carrito', JSON.stringify(deletedProd));
+            io.emit('producto_eliminado_carrito', JSON.stringify({product: deletedProd, newTotal}));
         
             return res.status(204).json({});
         } catch (err) {

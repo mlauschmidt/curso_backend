@@ -18,7 +18,6 @@ class UserMiddlewares {
                     }); */
 
                     console.log(`Error: ${info.message}.`);
-
                     return next()
                 }
                 

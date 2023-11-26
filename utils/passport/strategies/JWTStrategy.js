@@ -2,21 +2,17 @@ const passportJWT = require('passport-jwt');
 const JWTStrategy = passportJWT.Strategy;
 const extractJWT = passportJWT.ExtractJwt;
 
-/* const headerExtractor = (req) => {
-    return req.headers && req.headers['authorization'] && req.headers['authorization'].replace('Bearer ', '')
-} */
-
 const cookieExtractor = (req) => {
     let token = null;
 
-    if (req && req.cookies) {
-        token = req.cookies['authTokenCookie'];
+    if (req && req.signedCookies) {
+        token = req.signedCookies['authTokenCookie'];
     }
+    
     return token;
 }
 
 const jwtOptions = {
-    /* jwtFromRequest: extractJWT.fromExtractors([headerExtractor]), */
     jwtFromRequest: extractJWT.fromExtractors([cookieExtractor]),
     secretOrKey: process.env.JWT_PRIVATE_KEY
 }

@@ -8,8 +8,10 @@ class CartDTO {
                 price: item.product.price,
                 thumbnail: item.product.thumbnail
             },
-            quantity: item.quantity
-        }))
+            quantity: item.quantity,
+            subtotal: item.subtotal
+        })),
+        this.total = cart.total
     }
 }
 

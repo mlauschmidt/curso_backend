@@ -1,11 +1,9 @@
 const socket = io();
 
-const authToken = localStorage.getItem('authToken');
 const fetchOptions = {
     method: 'GET',
     headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
+        'Content-Type': 'application/json'
     }
 };
 
@@ -75,8 +73,7 @@ const addProductToCart = (prodId) => {
             fetch(`/api/carts/${user.cartId}/products/${prodId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    'Content-Type': 'application/json'
                 }
             })
             .catch (e => console.log(e))
@@ -94,14 +91,18 @@ const logout = () => {
         fetch(`/api/carts/${user.cartId}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Content-Type': 'application/json'
             }
         })
         .then (() => {
-            localStorage.removeItem('authToken')
-
-            location.assign('/home')
+            fetch('/api/sessions/logout', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then (() => location.assign('/home'))
+            .catch (e => console.log(e))
         }) 
         .catch (e => console.log(e))
     })

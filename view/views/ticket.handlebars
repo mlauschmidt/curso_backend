@@ -1,0 +1,31 @@
+<h1>Ticket de compra</h1>
+
+<div>
+    <p>Comprador: {{ticket.purchaser}}</p> 
+    <p>Número de ticket: {{ticket.code}}</p> 
+    <p>Fecha y hora de compra: {{ticket.purchase_datetime}}</p> 
+    <table>
+        <tbody>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+            {{#each ticket.products}}
+                <tr>
+                    <td>{{this.product.title}}</td>
+                    <td>$ {{this.product.price}}</td>
+                    <td>{{this.quantity}}</td>
+                    <td>$ {{this.subtotal}}</td>
+                </tr>
+            {{/each}}
+            <tr style="font-weight: bold" id="totalCart">
+                <td>TOTAL DE COMPRA</td>
+                <td></td>
+                <td></td>
+                <td>$ {{ticket.amount}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

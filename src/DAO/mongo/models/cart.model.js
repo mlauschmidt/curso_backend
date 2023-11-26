@@ -8,10 +8,15 @@ const cartSchema = mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId, 
                     ref: 'products' 
                 },
-                quantity: Number
+                quantity: Number,
+                subtotal: Number
             }
         ],
-        default: []
+        /* default: [] */
+    },
+    total: {
+        type: Number,
+        default: 0
     }
 })
 

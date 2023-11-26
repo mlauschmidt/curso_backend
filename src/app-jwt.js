@@ -23,7 +23,8 @@ initializePassport();
 app.use(passport.initialize());
 
 //Configuracion cookies
-app.use(cookieParser('clave')); //GUARDAR LA CLAVE EN UNA VARIABLE DE ENTORNO
+const secret = process.env.COOKIE_PRIVATE_KEY;
+app.use(cookieParser(secret));
 
 //Configuracion websockets
 const httpServer = app.listen(8080, () => {

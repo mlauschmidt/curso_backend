@@ -4,24 +4,36 @@
     <table>
         <tbody id="cartContainer">
             <tr>
-                <th>Nombre</th>
+                <th>Producto</th>
                 <th>Precio</th>
                 <th>Cantidad</th>
+                <th>Subtotal</th>
             </tr>
             {{#each cart.products}}
                 <tr id="prod-{{this.product.id}}">
                     <td>{{this.product.title}}</td>
-                    <td>{{this.product.price}}</td>
+                    <td>$ {{this.product.price}}</td>
                     <td>{{this.quantity}}</td>
+                    <td>$ {{this.subtotal}}</td>
                     <td><button style="margin: 10px" class="deleteProdCart" id="deleteProdCart_{{this.product.id}}" onclick="deleteProdCart('{{../cart.id}}','{{this.product.id}}')">Eliminar</button></td>          
                 </tr>
             {{/each}}
         </tbody>
+        <tr style="font-weight: bold" id="totalCart">
+            <td>TOTAL</td>
+            <td></td>
+            <td></td>
+            <td>$ {{cart.total}}</td>
+        </tr>
     </table>
 </div>
 
 <div>
     <button style="margin: 20px 0px 20px 20px" class="goToProductsButton" id="goToProductsButton_{{userId}}"><a href="http://localhost:8080/home/{{userId}}">Seguir comprando</a></button>
+</div>
+
+<div>
+    <button style="margin: 20px 0px 20px 20px" class="purchaseButton" id="purchaseButton_{{cart.id}}" onclick="purchase()">Finalizar compra</button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

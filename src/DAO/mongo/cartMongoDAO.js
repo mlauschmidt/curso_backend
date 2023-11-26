@@ -28,12 +28,8 @@ class CartManager {
         }
     }
 
-    async createCart () {
-        const newCart = {
-            products: []
-        }; 
-
-        const cartCreated = await this.model.create(newCart);
+    async createCart (data) {
+        const cartCreated = await this.model.create(data);
 
         if (cartCreated) {
             console.log('Carrito creado correctamente.');
@@ -45,7 +41,7 @@ class CartManager {
     }
   
     async updateCart (cartId, productId, quantity) {
-        const cart = await this.getCartById(cartId);
+        let cart = await this.getCartById(cartId);
         const product = await this.productManager.getProductById(productId);
         
         if (cart) {
@@ -62,9 +58,18 @@ class CartManager {
                             return quantity;
                         }
                     } 
-
-                    await this.model.updateOne({_id: cartId, 'products.product': productId}, {$set: {'products.$.quantity': qty()}});
-
+                    
+                    const updateData = {
+                        $set: {
+                            'products.$.quantity': qty(),
+                            'products.$.subtotal': qty() * product.price,
+                            total: cart.products.reduce((acc, prod) => acc + prod.subtotal, 0) + qty() * product.price
+                        }
+                    };
+                      
+                    await this.model.updateOne({ _id: cartId, 'products.product': productId }, updateData);
+                    cart = await this.getCartById(cartId);
+                    await this.model.updateOne({ _id: cartId}, { total: cart.products.reduce((acc, prod) => acc + prod.subtotal, 0)});
                     const updatedCart = await this.getCartById(cartId);
 
                     console.log('Carrito actualizado correctamente.');
@@ -78,14 +83,18 @@ class CartManager {
                 try {
                     const addProduct = {
                         product: product,
-                        quantity: quantity || 1
+                        quantity: quantity || 1,
+                        subtotal: product.price * (quantity || 1)
                     }
 
                     await this.model.updateOne({_id: cartId}, {$push: {products: addProduct}});
+                    cart = await this.getCartById(cartId);
+                    await this.model.updateOne({ _id: cartId}, { total: cart.products.reduce((acc, prod) => acc + prod.subtotal, 0)});
+                    const updatedCart = await this.getCartById(cartId);
 
                     console.log('Carrito actualizado correctamente.');
     
-                    return await this.getCartById(cartId);;
+                    return updatedCart;
                 } catch (err) {
                     console.log('Error al actualizar el carrito.', err);
                     throw new Error('Error al actualizar el carrito.');
@@ -102,7 +111,7 @@ class CartManager {
 
         if (cart) {
             try {
-                await this.model.updateOne({_id: cartId}, {$set: {products: []}});
+                await this.model.updateOne({_id: cartId}, {$set: {products: [], total: 0}});
 
                 console.log('Carrito eliminado correctamente.');
 
@@ -118,7 +127,7 @@ class CartManager {
     }
 
     async deleteProductInCart (cartId, productId) {
-        const cart = await this.getCartById(cartId);
+        let cart = await this.getCartById(cartId);
 
         if (cart) {
             const productExists = await this.model.findOne({_id: cartId, 'products.product': productId});
@@ -128,6 +137,8 @@ class CartManager {
 
                 try {
                     await this.model.updateOne({_id: cartId}, {$pull: {products: {product: productId}}});
+                    cart = await this.getCartById(cartId);
+                    await this.model.updateOne({ _id: cartId}, { total: cart.products.reduce((acc, prod) => acc + prod.subtotal, 0)});
 
                     console.log('Producto eliminado correctamente.');
 

@@ -24,13 +24,17 @@ sessionRouter.post('/register', usersMiddlewares.authentication({strategy: 'regi
 })
 
 sessionRouter.post('/login', usersMiddlewares.authentication({strategy:'login'}, '/login'), async (req, res) => {
-    /* return res.json(req.user); */
     const token = req.user;
 
     return res.cookie('authTokenCookie', token, {
         maxAge: 60*60*1000,
+        signed: true,
         httpOnly: true
-    }).send({token});
+    }).send({message: 'Logged in.'});
+})
+
+sessionRouter.get('/logout', (req, res) => {
+    return res.clearCookie('authTokenCookie').send('Cookie removed');
 })
 
 sessionRouter.get('/github', usersMiddlewares.authentication({strategy: 'github', options: {scope: ['user: email']}}), async (req, res) => {
@@ -42,10 +46,9 @@ sessionRouter.get('/github-callback', usersMiddlewares.authentication({strategy:
 
     return res.cookie('authTokenCookie', token, {
         maxAge: 60*60*1000,
+        signed: true,
         httpOnly: true
-    }).redirect(`/github-data?token=${token}`);
-
-    /* return res.redirect(`/github-data?token=${req.user}`); */
+    }).redirect(`/github-data`);
 })
 
 sessionRouter.post('/recovery-password', async (req, res) => {

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const viewsRouter = Router();
-const { userService, productService, cartService } = require('../services/index');
+const { productService, cartService, ticketService } = require('../services/index');
 const UserMiddlewares = require('../../middlewares/userMiddlewares');
 const usersMiddlewares = new UserMiddlewares();
 
@@ -36,8 +36,6 @@ viewsRouter.get('/home/:uid',
     usersMiddlewares.authentication({strategy: 'jwt'}), 
     usersMiddlewares.authorization('admin', 'user'),
     async (req, res) => {
-        /* const userId = req.params.uid;
-        const user = await userService.getUser(null, null, userId); */
         const user = req.user;
         const limit = req.query.limit || 5;
         const page = req.query.page || 1;
@@ -50,8 +48,6 @@ viewsRouter.get('/home/:uid',
             user,
             products,
             userLogged: user.id !== undefined,
-            /* hasIdParam: userId === undefined,
-            idLink: `/${userId}` */
         }
         
         if (user.role === 'admin') {
@@ -68,7 +64,6 @@ viewsRouter.get('/carts/:cid',
     async (req, res) => {
         const cartId = req.params.cid;
         const cart = await cartService.getCartById(cartId);
-        /* const user = await userService.getUser(null, null, null, cartId); */
         const user = req.user;
         
         const params = {
@@ -78,6 +73,22 @@ viewsRouter.get('/carts/:cid',
         }
 
         return res.render('cart', params);
+    }
+)
+
+viewsRouter.get('/carts/:cid/purchase/:tid',
+    usersMiddlewares.authentication({strategy: 'jwt'}), 
+    usersMiddlewares.authorization('user'),
+    async (req, res) => {
+        const ticketId = req.params.tid;
+        const ticket = await ticketService.getTicketById(ticketId);
+        
+        const params = {
+            title: 'Ticket de compra',
+            ticket
+        }
+
+        return res.render('ticket', params);
     }
 )
 
@@ -124,8 +135,6 @@ viewsRouter.get('/profile/:uid',
     usersMiddlewares.authentication({strategy: 'jwt'}), 
     usersMiddlewares.authorization('admin', 'user'),
     async (req, res) => {
-        /* const userId = req.params.uid;
-        const user = await userService.getUser(null, null, userId); */
         const user = req.user;
 
         const params = {

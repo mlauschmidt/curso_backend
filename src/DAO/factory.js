@@ -24,6 +24,8 @@ class Data {
         let cartManager;
         let UserManager;
         let userManager;
+        let TicketManager;
+        let ticketManager;
 
         switch (settings.persistence) {
             case "mongo": 
@@ -38,7 +40,10 @@ class Data {
                 UserManager = require('./mongo/userMongoDAO');
                 userManager = new UserManager();
 
-                return {productManager, cartManager, userManager};
+                TicketManager = require('./mongo/ticketMongoDAO');
+                ticketManager = new TicketManager(cartManager, productManager);
+
+                return {productManager, cartManager, userManager, ticketManager};
 
             case "fileSystem":
                 ProductManager = require('./fileSystem/productFileDAO');
@@ -50,7 +55,10 @@ class Data {
                 UserManager = require('./fileSystem/userFileDAO');
                 userManager = new UserManager('users.json');
 
-                return {productManager, cartManager, userManager};
+                TicketManager = require('./fileSystem/ticketFileDAO');
+                ticketManager = new TicketManager('tickets.json');
+
+                return {productManager, cartManager, userManager, ticketManager};
 
             default:
                 throw new Error('Fuente de datos no válida');
